@@ -1,125 +1,159 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { TextInput,Button,Text,Title,Subheading} from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
-export default function SignIn() {
+import React,{useState} from 'react';
+import { View, StyleSheet,Dimensions } from 'react-native';
+import { TextInput,Button,Text,HelperText,Caption  } from 'react-native-paper';
+import {AuthHeader} from './../../components';
+import gstyle from "./../../style"
+import { Formik } from 'formik';
+import Api from '../../api';
+import { saveToken } from '../../store/async';
+import AuthContext from './../../store/context'
 
-  const [email, setEmail] = React.useState(''); 
-  const [loading, setLoading] = React.useState(false); 
-  const [password, setPassword] = React.useState(''); 
-  const [errors, setErrors] = React.useState({
-    msg:''
-  }); 
-  
-  
-  const signIn=()=>{
-    setLoading(true)
-    fetch('https://proptybox.com/api/v1/login',{
-      method:"POST",
-      headers:{
-        Accept:'application/json',
-        'Content-Type':'application/json'
-      },
-      body:JSON.stringify({
-        email,
-        password
-      })
-    }).then(res=>res.json()).then((data)=>{
-      setLoading(false)
-    }).catch((err)=>{
-      setLoading(false)
-      setErrors({
-        msg:"Invalid cridentials"
-      })
+
+import * as Yup from 'yup';
+ 
+ const SignupSchema = Yup.object().shape({
+   password: Yup.string()
+     .min(6, 'Password must be more than six(6) characters')
+     .required('Password is required'),
+      email: Yup.string().email('Invalid email').required('Email is required'),
+ });
+ 
+ const { width, height } = Dimensions.get('window')
+
+export default function SignUp() {
+
+  const [loading, setLoading] = useState(false)
+  const { signIn } = React.useContext(AuthContext);
+
+  const handleLogin=(value)=>{
+    setLoading(true);
+
+    Api.post('/login',value).then(res=>{
+      setLoading(false);
+      // console.log(res.data.data.access_token)
+      //saveToken(res.data.data.access_token);
+
+      signIn(res.data.data.access_token)
+      
+    }).catch(err=>{
+      setLoading(false);
+      console.log(err.response.data.msg);
     })
   }
 
   return (
-    <View style={styles.container}>
+    <View style={gstyle.container}>
+       <View style={{flex:1}}>
+     <View style={{flex:1 }}></View>
+         <View style={styles.bCon}>
+            <View style={styles.body}>
+               <AuthHeader page="Sign in" title="Welcome Back" msg="" />
 
-      <View style={styles.formContaiiner}>
-        <View style={styles.header}>
-        <Title>Welcome Back</Title>
-        <Text style={styles.log}>Login </Text>
-        <Text>{errors && errors.msg}</Text>
+               <Formik
+                initialValues={{ email: '',password:'' }}
+                onSubmit={values => handleLogin(values)}
+                validationSchema={SignupSchema}
+              >
+                {({ handleChange, handleBlur, handleSubmit, values,errors, touched }) => (
+                 <View>
+                   
+                <View style={gstyle.formControl}>
+                    <TextInput
+                      onChangeText={handleChange('email')}
+                      onBlur={handleBlur('email')}
+                      value={values.email}
+                      style={gstyle.input}
+                      label="Email Address"
+                      placeholder="mail@example.com"
+                      error={errors.email && touched.email ? true : false}
+                    />
+                    {errors.email && touched.email ? (
+                        <HelperText  type="error">{errors.email}</HelperText>
+                      ) : null}
 
-        </View>
+                  </View>
 
-        <TextInput
-          label="Email"
-          placeholder="Email"
-          value={email}
-          onChangeText={email => setEmail(email)}
-          mode='flat'
-          style={styles.input}
+                  <View style={gstyle.formControl}>
+                    <TextInput
+                      onChangeText={handleChange('password')}
+                      onBlur={handleBlur('password')}
+                      value={values.password}
+                      style={gstyle.input}
+                      label="Password"
+                      placeholder="**********"
+                      secureTextEntry={true}
+                      error={errors.password && touched.password ? true : false}
+                    />
+                     {errors.password && touched.password ? (
+                        <HelperText  type="error">{errors.password}</HelperText>
+                      ) : null}
 
-        />
+                    </View>
 
-      <TextInput
-            label="Password"
-            placeholder="********"
-            value={password}
-            mode='flat'
-            onChangeText={password => setPassword(password)}
-            style={styles.input}
-            secureTextEntry={true}
+                    <View style={styles.forgot}>
+                      <Caption  >Forgot password?</Caption >
+                    </View>
+                    <Button loading={loading} onPress={handleSubmit} theme={{ roundness: 3 }} mode="contained">Submit</Button>
+                 </View>
+                  
 
-          />
 
-         <Button loading={loading} raised theme={{ roundness: 3 }}  mode="contained" onPress={signIn}>
-             Sign In
-          </Button>
+                )}
+              </Formik>
 
-          <Subheading style={{color:'#888',textAlign:'center',paddingVertical:10}}>Fotgot password ?</Subheading>
-      </View>
-      <View style={styles.footer}>
-        <Button style={{width:'50%'}}><Text style={{width:'100%',textAlign:'center'}}><Icon name="google" size={18} color="#5895F9" /> Login In with Google</Text>
-        </Button>
-        <Button style={{width:'50%'}}><Text style={{textAlign:'center'}}><Icon name="facebook" size={18} color="#5895F9" /> Login In with Facebook 
-        </Text>
-      
-        </Button>
-      </View>
+
+
+              <View style={styles.orSocial}>
+                <Text>Or</Text>
+              </View>
+
+
+              <View>
+                <Button icon="google" style={{marginTop:10}} theme={{ roundness: 3 }} color="#FF3E30" mode="outlined">Login with Google</Button>
+                <Button icon="facebook" style={{marginTop:5}} theme={{ roundness: 3 }} mode="outlined">Login with facebook</Button>
+              </View>
+
+
+            </View>
+         </View>
+            
+       </View>
      </View>
-
   );
 }
                                 
 const styles=StyleSheet.create({
-   container:{
-     flex:1,
-     backgroundColor:'#EEF4FF',
-     alignItems:'center',
-     justifyContent:'center'
-   },
-   formContaiiner:{
-     width:'100%',
-     backgroundColor:'#fff',
-     padding:20,
-     paddingTop:30,
-     margin:10,
+   bCon:{
+     backgroundColor:'white',
+     height:'70%',
      borderTopLeftRadius:50,
-     borderTopRightRadius:50
+     borderTopRightRadius:50,
+     padding:20
+   },
 
+   body:{
+     flex:1,
+     backgroundColor:'white',
+     transform:[{
+       translateY:-100
+     }],
+     padding:10
    },
-   log:{
-     fontSize:35,
-     color:'#5895F9',
-     fontWeight:'700'
-   },
-   input:{
-     backgroundColor:'#EEF4FF',
+   forgot:{
+     alignItems:"flex-end",
      marginVertical:10
    },
 
-   footer:{
-     width:'100%',
-     backgroundColor:'#fff',
-     display:'flex',
-     flexDirection:'row',
+   orSocial:{
+     backgroundColor:'#EEF4FF',
+     width:30,
+     height:30,
+     borderRadius:15,
+     alignItems:'center',
      justifyContent:'center',
-     position:'absolute',
-     bottom:0,
-     padding:10
+     marginTop:20,
+     marginVertical:10,
+     left:(0.50 * width)-40 
+
    }
 })

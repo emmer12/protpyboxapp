@@ -29,7 +29,11 @@ export default function Onboarding({ navigation: { navigate } }) {
   }
   return (
     <View style={styles.header}>
-      <Button raised theme={{ roundness: 3 }} mode="contained" onPress={() => { navigate('SignInScreen') }}>
+      <Button raised theme={{ roundness: 3 }} mode="contained" onPress={() => { navigate('SignUpScreen') }}>
+        Sign Up
+    </Button>
+
+     <Button style={{marginTop:5}} raised theme={{ roundness: 3 }} mode="contained" onPress={() => { navigate('SignInScreen') }}>
         Sign In
     </Button>
      </View>
