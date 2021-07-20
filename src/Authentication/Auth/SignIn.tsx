@@ -56,6 +56,7 @@ export default function SignUp() {
               >
                 {({ handleChange, handleBlur, handleSubmit, values,errors, touched }) => (
                  <View>
+
                    
                 <View style={gstyle.formControl}>
                     <TextInput
@@ -97,7 +98,6 @@ export default function SignUp() {
                  </View>
                   
 
-
                 )}
               </Formik>
 
@@ -107,13 +107,11 @@ export default function SignUp() {
                 <Text>Or</Text>
               </View>
 
-
               <View>
                 <Button icon="google" style={{marginTop:10}} theme={{ roundness: 3 }} color="#FF3E30" mode="outlined">Login with Google</Button>
                 <Button icon="facebook" style={{marginTop:5}} theme={{ roundness: 3 }} mode="outlined">Login with facebook</Button>
               </View>
-
-
+              
             </View>
          </View>
             

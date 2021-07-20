@@ -19,11 +19,7 @@ export default function Onboarding({ navigation: { navigate } }) {
       setUser({
         data
       })
-      console.log('====================================');
-      console.log(user);
-      console.log('====================================');
     }).catch((err)=>{
-      console.log(err);
       
     })
   }

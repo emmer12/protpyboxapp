@@ -1,15 +1,93 @@
-import React,{useState} from 'react';
-import { View,Text, StyleSheet,Dimensions } from 'react-native';
+import React, { useState,useEffect } from 'react';
+import { View, Text, StyleSheet, Dimensions, ScrollView,SafeAreaView,FlatList } from 'react-native';
+import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import gstyle from "./../../style"
+import { ProptyBox,RequestCard,Banner } from './../../components'
+import Api from '../../api';
 
 
- const { width, height } = Dimensions.get('window')
+const { width, height } = Dimensions.get('window')
 
-export default function Home() {
+export default function Home({navigation}:any) {
+
+
+  const [listing, setListing] = React.useState([]); 
+  const [requests, setRequest] = React.useState([1,2,3]); 
+  const [loading, setLoading] = React.useState(false); 
+
+  useEffect(() => {
+    getListing()
+}, [])
+
+
+
+const getListing=()=>{
+  setLoading(true)
+  Api.get('/all-listing-for-guest?page=1').then(res=>{
+  setLoading(false) 
+    setListing(res.data.data)
+  })
+}
+
+
+
+const renderItem = ({ item }:any) => (
+  <ProptyBox list={item} navigation={navigation} />
+);
+const requestItem = ({ item }:any) => (
+   <RequestCard request={item} />
+);
+
 
   return (
-    <View>
-      <Text>Welcome Home</Text>      
-    </View>
+    <SafeAreaView>
+    <ScrollView>
+      <View>
+          <Banner search={true} text="Find a useful space in 24 hours" />
+
+
+        <View style={styles.requestCon}>
+        <FlatList
+          snapToInterval={width-30}
+          horizontal={true}         
+          data={requests}
+          renderItem={requestItem}
+          keyExtractor={(item) => item?.id?.toString()}
+         />  
+        </View>
+
+        <View>
+          <FlatList
+          data={listing}
+          renderItem={renderItem}
+          keyExtractor={(item) => item?.id?.toString()}
+         />
+        </View>
+      </View>
+    </ScrollView>
+    </SafeAreaView>
   );
 }
+
+
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: '#5895F9',
+    padding: 10,
+  },
+  requestCon: {
+
+  },
+
+  text: {
+    color:'#fff',
+  },
+  req:{
+    height:200,
+    width:300,
+    backgroundColor:'#ddd',
+    borderRadius:20,
+    margin:10
+
+  }
+})

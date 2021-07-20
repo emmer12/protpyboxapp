@@ -1,5 +1,5 @@
 
- const AuthReducer=(state, action)=> {
+ const AuthReducer=(state:any, action:any)=> {
     switch (action.type) {
         case "FETCH_TOKEN":
             return {

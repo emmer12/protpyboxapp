@@ -3,25 +3,22 @@ import { View,Text, StyleSheet,Dimensions,FlatList, SafeAreaView,TouchableOpacit
 import gstyle from "./../../style"
 import { ProptyBox } from './../../components'
 import Api from '../../api';
-
+import { NavigationScreenProps } from 'react-navigation';
 
  const { width, height } = Dimensions.get('window')
 
 
 
 
-export default function Listing({navigation}) {
+export default function Listing({navigation}:NavigationScreenProps) {
 
 
   const [listing, setListing] = React.useState([]); 
   const [loading, setLoading] = React.useState(false); 
 
-  
   useEffect(() => {
-      getListing()
-  }, [])
-
-
+    getListing()
+ }, [])
 
   const getListing=()=>{
     setLoading(true)
@@ -29,12 +26,10 @@ export default function Listing({navigation}) {
     setLoading(false) 
       setListing(res.data.data)
     })
-
   }
+  
 
-
-
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }:any) => (
     <ProptyBox list={item} navigation={navigation} />
   );
 

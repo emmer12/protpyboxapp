@@ -9,9 +9,17 @@ import { ProptyBox } from './../../components'
 
 const { width, height } = Dimensions.get('window')
 
-export default function Profile() {
-const [user, setUser] = React.useState([]); 
-  const [loading, setLoading] = React.useState(false); 
+interface UserProps{
+  fullname:string;
+  listing:Array<{}>;
+  gender:string;
+  age:string
+
+}
+
+export default function Profile({navigation}:{navigation:any}) {
+  const [user, setUser] = React.useState<UserProps>({}); 
+  const [loading, setLoading] = React.useState<boolean>(false); 
 
   useEffect(() => {
       getUser()
@@ -21,6 +29,7 @@ const [user, setUser] = React.useState([]);
     setLoading(true)
     Api.get('auth-user').then(res=>{
     setLoading(false)
+    console.log(res.data.data)
       setUser(res.data.data)
     }).catch(err=>{
       console.log(err);
@@ -28,11 +37,11 @@ const [user, setUser] = React.useState([]);
 
   }
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }:any) => (
     <ProptyBox list={item} navigation={navigation} />    
   );
 
-  const imageUrl=user && `https://proptybox.com/uploads/profile-images/${user.profile_pic_filename}`
+  const imageUrl:any=user && `https://proptybox.com/uploads/profile-images/${user.profile_pic_filename}`
 
   return (
     <View>
@@ -48,11 +57,11 @@ const [user, setUser] = React.useState([]);
          
          <View style={styles.details}>
           <View style={{alignItems:'center'}}>
-            <Title>{ user.fullname}</Title>
+            <Title>{ user?.fullname}</Title>
           </View>
 
           <View  style={{alignItems:'center'}}>
-            <Text>{ user.gender},{ user.age}</Text>
+            <Text>{ user?.gender},{ user?.age}</Text>
           </View>
 
           <View>
@@ -69,20 +78,16 @@ const [user, setUser] = React.useState([]);
 
              <View>
              {
-              loading
-
-              ?
-              <ActivityIndicator size="large" color='grey' style={{justifyContent:'center',alignItems:'center',flex:1
-            }} /> 
+              loading ? <ActivityIndicator size="large" color='grey' style={{justifyContent:'center',alignItems:'center',flex:1 }} /> 
               :
-               user && user.listing.length < 1
+              user && user?.listing?.length < 1
               ?
               <Text>Empty listing </Text>
               : 
               <FlatList
-              data={user.listing}
+              data={user?.listing}
               renderItem={renderItem}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item) => item?.id?.toString()}
             />
             }
              </View>
