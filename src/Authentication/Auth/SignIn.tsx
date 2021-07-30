@@ -7,6 +7,7 @@ import { Formik } from 'formik';
 import Api from '../../api';
 import { saveToken } from '../../store/async';
 import AuthContext from './../../store/context'
+import { AlertContext } from '../../context/GlobalAlert';
 
 
 import * as Yup from 'yup';
@@ -24,20 +25,27 @@ export default function SignUp() {
 
   const [loading, setLoading] = useState(false)
   const { signIn } = React.useContext(AuthContext);
+  const { alert : Alert } = React.useContext(AlertContext);
 
   const handleLogin=(value)=>{
     setLoading(true);
 
     Api.post('/login',value).then(res=>{
       setLoading(false);
-      // console.log(res.data.data.access_token)
-      //saveToken(res.data.data.access_token);
-
+      Alert({
+        title:"You are Welcome",
+        type:'success',
+        visible:true
+      })
       signIn(res.data.data.access_token)
       
     }).catch(err=>{
       setLoading(false);
-      console.log(err.response.data.msg);
+      Alert({
+        title:err.response.data.msg,
+        type:'error',
+        visible:true
+      })
     })
   }
 
@@ -67,6 +75,7 @@ export default function SignUp() {
                       label="Email Address"
                       placeholder="mail@example.com"
                       error={errors.email && touched.email ? true : false}
+                      keyboardType="email-address"
                     />
                     {errors.email && touched.email ? (
                         <HelperText  type="error">{errors.email}</HelperText>
@@ -84,6 +93,7 @@ export default function SignUp() {
                       placeholder="**********"
                       secureTextEntry={true}
                       error={errors.password && touched.password ? true : false}
+                      
                     />
                      {errors.password && touched.password ? (
                         <HelperText  type="error">{errors.password}</HelperText>

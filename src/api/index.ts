@@ -1,11 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const mode = 'production'
+export const baseURL='http://192.168.43.229:8000'
 let prod= 'https://proptybox.com.ng/api/v1' 
 let production= 'https://proptybox.com/api/v1' 
+let devEndpoint= 'https://api.proptybox.com/api/v1' 
+let localEndpoint= 'http://192.168.43.229:8000/api/v1' 
 // 
 const api = axios.create({
-  baseURL:production
+  baseURL:localEndpoint
 });
 
 
@@ -38,9 +41,9 @@ api.interceptors.response.use((response) =>{
               originalRequest.headers['Authorization'] = 'Bearer ' + token;
               return axios(originalRequest);
           })
-          .catch(err => err)
+          .catch(err => Promise.reject(err))
   } else {
-      return error.response
+      return Promise.reject(error)
   }
 
 })

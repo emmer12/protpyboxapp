@@ -5,12 +5,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import { Provider as PaperProvider, Title } from 'react-native-paper';
-import theme from "./src/theme"
+import theme,{customAlertStyle} from "./src/theme"
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthReducer from './src/store/Reducers/auth'
 import AuthContext from './src/store/context'
 
 import { AuthenticationNavigator,AuthNavigator } from './src/navigation';
+import { AlertProvider } from './src/context/GlobalAlert';
+import { GlobalLoading } from './src/components/Loading';
 
 export default function App() {
   const initialState = {
@@ -55,7 +57,16 @@ export default function App() {
         }
 
       },
-      signOut: () => dispatch({ type: 'SIGN_OUT' }),
+      signOut:async () => {
+        try {
+          await AsyncStorage.removeItem('token')
+          dispatch({ type: 'SIGN_OUT' });
+        } catch (err) {
+          console.log(err);
+
+        }
+      
+      },
       signUp: async (data: string) => {
         dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
@@ -63,27 +74,23 @@ export default function App() {
     []
   );
 
-
-
-
-
   return (
-    <AuthContext.Provider value={authContext}>
+    <AuthContext.Provider value={authContext} >
       <PaperProvider theme={theme}>
+        <AlertProvider customStyle={customAlertStyle}>
         <NavigationContainer>
           {
-            state.isLoading ? <ActivityIndicator size="large" color='grey' style={{
-              justifyContent: 'center', alignItems: 'center', flex: 1
-            }} /> :
+            state.isLoading ? <GlobalLoading  /> :
               state.token ?
                 <>
-                  <StatusBar backgroundColor='#5895F9' />
+                  <StatusBar backgroundColor='' />
                   <AuthNavigator />
                 </>
                 :
                 <AuthenticationNavigator />
           }
         </NavigationContainer>
+        </AlertProvider>
       </PaperProvider>
     </AuthContext.Provider>
   );

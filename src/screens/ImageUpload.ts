@@ -1,0 +1,1 @@
+export { ImageUpload as ImageUploadScreen } from '../Authentication/Auth' 

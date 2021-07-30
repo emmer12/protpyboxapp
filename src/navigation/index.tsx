@@ -11,6 +11,8 @@ import { ListingScreen } from "../screens/ListingScreen"
 import { ListDetailsScreen } from "../screens/ListDetailsScreen"
 import { CreateListingScreen } from "../screens/CreateListing"
 import { CreateRequestScreen } from "../screens/CreateRequest"
+import { ImageUploadScreen } from "../screens/ImageUpload"
+import { ImageBrowser } from "../screens/ImageBrowser"
 import { RequestScreen } from "../screens/RequestScreen"
 import { ProfileScreen } from "../screens/ProfileScreen"
 import { Title } from 'react-native-paper';
@@ -20,7 +22,7 @@ import {Create } from './../components';
 
 
 
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
+ import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {Logo,RightMenu} from '../components';
 
 import {AuthenticationType,TapType,AuthType } from './type'
@@ -42,6 +44,20 @@ export const AuthenticationNavigator=()=>{
 };
 
 const HomeTabNavigator = () => {
+  let [open,setOpen]=React.useState(false);
+
+  // <Tab.Screen options={{tabBarColor: '',tabBarLabel:'Create',
+  // tabBarIcon: ({ color }) => (
+  //   <Create color={color}  open={open} />
+  // )}} name="Create" component={CreateScreen} 
+  //   listeners={{
+  //     tabPress:e=>{
+  //       e.preventDefault()
+  //       setOpen(!open)
+  //     }
+  //   }}
+  // />
+
   return (
     <Tab.Navigator
     initialRouteName="Home"
@@ -60,14 +76,9 @@ const HomeTabNavigator = () => {
 
           <Tab.Screen options={{tabBarColor: '',tabBarLabel:'Create',
           tabBarIcon: ({ color }) => (
-            <Create color={color} />
+            <Add color={color} />
           )}} name="Create" component={CreateScreen} 
-            listeners={{
-              tabPress:e=>{
-                e.preventDefault()
-                alert()
-              }
-            }}
+            
           />
 
           <Tab.Screen options={{tabBarColor: '',tabBarLabel:'Requests',
@@ -112,9 +123,17 @@ export const AuthNavigator=()=>{
           }}
          />
 
+         
+
          <AuthStack.Screen name="ListDetailsScreen" component={ListDetailsScreen} 
          options={({route})=>({
           headerTitle: props => (<Title>{cap(route.params.type)}</Title>)
+         })}
+         />
+
+       <AuthStack.Screen name="UploadImage" component={ImageUploadScreen} 
+         options={({route})=>({
+          headerTitle: props => (<Title>Upload Images</Title>)
          })}
          />
 
@@ -122,6 +141,11 @@ export const AuthNavigator=()=>{
          options={({route})=>({
           headerTitle: props => (<Title>Create Listing</Title>)
          })}
+         />
+
+       <AuthStack.Screen  name='ImageBrowser'
+          component={ImageBrowser}
+          options={{title: 'Selected 0 files', }} 
          />
 
       <AuthStack.Screen name="CreateRequest" component={CreateRequestScreen} 

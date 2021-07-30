@@ -1,27 +1,48 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, Picker, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
+import React, { useState,useEffect, useContext } from 'react';
+import { View, StyleSheet, Dimensions, Picker, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView,TouchableOpacity,Animated,Image } from 'react-native';
 import gstyle from "../../style"
-import { TextInput, Button, Text, HelperText, Caption } from 'react-native-paper';
+import { TextInput, Button, Text, HelperText, Caption, Colors } from 'react-native-paper';
 import { Formik } from 'formik';
 import Api from '../../api';
-import DropDown from 'react-native-paper-dropdown';
 import * as Yup from 'yup';
 import RNPickerSelect from 'react-native-picker-select';
-import { DatePickerModal } from 'react-native-paper-dates';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import theme from '../../theme';
+import * as ImagePicker from 'expo-image-picker';
+import {AlertContext} from './../../context/GlobalAlert'
+
+// import DropDown from 'react-native-paper-dropdown';
+// import { DatePickerModal } from 'react-native-paper-dates';
+// import { ImageBrowser } from 'expo-image-picker-multiple';
 
 
 const { width, height } = Dimensions.get('window')
 
 const RequestSchema = Yup.object().shape({
-  about_cohabitation: Yup.string().required('About cohabitation is required'),
+  // about_cohabitation: Yup.string().required('About cohabitation is required'),
   space_type: Yup.string().required('Space type is required'),
   space_for: Yup.string().required('This field is required'),
+  rent: Yup.string().required('This field is required'),
+  duration: Yup.string().required('This field is required'),
+  space_address: Yup.string().required('This field is required'),
+  payer_gender: Yup.string().required('This field is required'),
+  space_location: Yup.string().required('This field is required'),
 });
 
-export default function Home() {
+export default function Home({navigation}:any) {
 
-  const [date, setDate] = React.useState<Date | undefined>(undefined);
-  const [open, setOpen] = React.useState(false);
+  // const [date, setDate] = React.useState<Date | undefined>(undefined);
+  // const [open, setOpen] = React.useState(false);
+
+  const [date, setDate] = useState(new Date(1598051730000));
+  const [mode, setMode] = useState('date');
+  const [show, setShow] = useState(false);
+  let AnimatedVal=new Animated.Value(1)
+  const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const {alert:Alert} = useContext(AlertContext)
+
+  const [activeIndex,setActive]=useState(1)
 
   const init = {
     about_cohabitation: "",
@@ -37,22 +58,80 @@ export default function Home() {
     payer_gender: "",
     space_location:'',
     selectedTags:[],
-    images:'',
   }
-  const onDismissSingle = React.useCallback(() => {
-    setOpen(false);
-  }, [setOpen]);
 
-  const onConfirmSingle = React.useCallback(
-    (params) => {
-      setOpen(false);
-      setDate(params.date);
-    },
-    [setOpen, setDate]
-  );
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);  
+  
+  const onChange = (event:any, selectedDate:any) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === 'ios');
+    setDate(currentDate);
+  };
+
+  const showMode = (currentMode:any) => {
+    setShow(true);
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode('date');
+  };
+
+  const showTimepicker = () => {
+    showMode('time');
+  };
+
+
+
 
   const handleRequest = (values: Object) => {
-    console.log(values)
+    let day=new Date(date).getDate()
+    let month=new Date(date).getMonth() + 1
+    let year=new Date(date).getFullYear()
+    values.available_from =`${year}-${month}-${day}`
+
+    setLoading(true)
+    Api.post('/create-listing',values).then((res)=>{
+      setLoading(false)
+      if(res.status === 200) {
+        console.log(res)
+        const list=res.data.list
+        navigation.navigate('UploadImage',{
+          params:{
+            list
+          }
+        })
+        Alert({
+          title:"Request created",
+          type:'success',
+          visible:true
+        })
+      }else{
+        Alert({
+          title:"Request Failed",
+          type:'error',
+          visible:true
+        })
+      }
+    }).catch((err)=>{
+      setLoading(false)
+
+      console.log(err.response)
+      Alert({
+        title:"Opps, something went wrong",
+        type:'error',
+        visible:true
+      })
+    })
   }
 
   const genderList = [
@@ -62,8 +141,49 @@ export default function Home() {
 
 
 
+  const handleNext = () => {
+    let next = activeIndex + 1;
+    Animated.timing(AnimatedVal,{
+      toValue:next,
+      useNativeDriver:false,
+      duration:500
+    }).start(()=>{
+    setActive(next)
+  })
+  };
+
+
+  const handlePrev = () => {
+    let next = activeIndex - 1;
+    Animated.timing(AnimatedVal,{
+      toValue:next,
+      useNativeDriver:false,
+      duration:500
+    }).start(()=>{
+    setActive(next)
+  })
+  };
+
+
+  // const progressWidth=`${(activeIndex/4)*100}%`;
+
+
+  const animWidth={
+    width:AnimatedVal.interpolate({
+      inputRange:[1,3],
+      outputRange:['33.33%','100%']
+    })
+  }
+
+
+
   return (
     <KeyboardAvoidingView style={{flex:1}} keyboardVerticalOffset={70} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+
+      <View style={styles.progress}>
+          <Animated.View style={[styles.progressInner,animWidth]}></Animated.View>
+      </View>
+
         <ScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
@@ -75,6 +195,15 @@ export default function Home() {
             >
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <View>
+
+
+                  {/* Tab 1 */}
+
+
+                 { activeIndex === 1 && 
+                 
+                 
+                 (<View>
 
                   <View style={gstyle.formControl} >
                     <TextInput
@@ -159,6 +288,25 @@ export default function Home() {
                       <HelperText type="error">{errors.space_address}</HelperText>
                     ) : null}
                   </View>
+
+                  </View>)
+                
+
+                  }
+
+
+
+                  {/* Close First section */}
+
+
+
+                  {/* Second Section  */}
+
+                 { activeIndex === 2 && 
+
+                  
+                  (<View>
+
                   <View style={styles.row}>
                     <View style={styles.col}>
                     <View style={gstyle.formControl}>
@@ -192,29 +340,26 @@ export default function Home() {
                       <HelperText type="error">{errors.duration}</HelperText>
                     ) : null}
                   </View>
-                  </View>
-                  </View>
+                 </View>
+                </View>
 
                   <View style={gstyle.formControl}>
-                  <Button onPress={() => setOpen(true)} uppercase={false} mode="text">
-                       {Date.parse(date) || "Available From"}
-                </Button>
-                <DatePickerModal
-                      // locale={'en'} optional, default: automatic
-                      mode="single"
-                      visible={open}
-                      onDismiss={onDismissSingle}
-                      date={date}
-                      onConfirm={onConfirmSingle}
-                      // validRange={{
-                      //   startDate: new Date(2021, 1, 2),  // optional
-                      //   endDate: new Date(), // optional
-                      // }}
-                      // onChange={} // same props as onConfirm but triggered without confirmed by user
-                      // saveLabel="Save" // optional
-                      // label="Select date" // optional
-                      // animationType="slide" // optional, default is 'slide' on ios/android and 'none' on web
-                    />
+                  <TouchableOpacity style={{ padding:10,paddingVertical:15,backgroundColor:'#EEF4FF'}} onPress={showDatepicker}  >
+                       <Text style={{fontSize:16,left:5,color:'#222'}}>Select Available From</Text>
+                </TouchableOpacity>
+
+                {show && (
+                  <DateTimePicker
+                    testID="dateTimePicker"
+                    value={date}
+                    mode={mode}
+                    is24Hour={true}
+                    display="default"
+                    onChange={onChange}
+                  />
+                )}
+                
+    
                     </View>
 
 
@@ -251,7 +396,20 @@ export default function Home() {
                     ) : null}
 
                   </View>
+                  
+                  
+                  </View>)
 
+                    }
+
+                  {/* Close Second Section */}
+
+
+
+                  {/* Third Section */}
+                 { activeIndex === 3 && 
+
+                  (<View>
 
                   <View style={gstyle.formControl}>
                       <TextInput
@@ -361,14 +519,47 @@ export default function Home() {
                     ) : null}
                   </View>
 
-                  <Button onPress={handleSubmit} theme={{ roundness: 3 }} mode="contained">Submit</Button>
+                  </View>)
+
+                    }
+
+                  {/* Close Third section */}
+                
+
+              
+                   {/* 
+                  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                      <Button title="Pick an image from camera roll" onPress={pickImage} >Upload Preview Images</Button>
+                      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+                    </View> */}
+
+
+                  {/* Forth Section */}
+
+
+
+                  { activeIndex === 3 &&  (<Button onPress={handleSubmit} theme={{ roundness: 3 }} mode="contained">Submit</Button>) }
+                 
+
                 </View>
               )}
 
             </Formik>
+
           </View>
         </TouchableWithoutFeedback>
          </ScrollView>
+            
+            
+            <View style={styles.navContainer}>
+              { activeIndex > 1 && <Button onPress={handlePrev} style={styles.prev} mode="outlined">Prev</Button>}
+              <View></View>
+              { activeIndex !== 3 && <Button onPress={handleNext} style={styles.next} mode="outlined">Next</Button>}
+            </View>
+
+           
+
+            
       </KeyboardAvoidingView>
   );
 }
@@ -382,5 +573,35 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between'
+  },
+
+  navContainer:{
+    flexDirection:'row',
+    padding:10,
+    position:'absolute',
+    bottom:0,
+    width,
+    justifyContent:'space-between'
+  },
+
+  next:{
+    
+  },
+
+  prev:{
+
+  },
+
+  progress:{
+    height:8,
+    backgroundColor:'#ccc',
+    margin:10
+  },
+
+  progressInner:{
+    backgroundColor:theme.colors.primary,
+    height:8,
+
   }
+
 })

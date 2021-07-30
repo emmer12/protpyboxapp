@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import { View, StyleSheet, Dimensions, Picker, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView } from 'react-native';
 import gstyle from "../../style"
 import { TextInput, Button, Text, HelperText, Caption } from 'react-native-paper';
@@ -7,6 +7,8 @@ import Api from '../../api';
 import DropDown from 'react-native-paper-dropdown';
 import * as Yup from 'yup';
 import RNPickerSelect from 'react-native-picker-select';
+import { Loading } from "./../../components/Loading";
+import {AlertContext} from './../../context/GlobalAlert'
 
 
 const { width, height } = Dimensions.get('window')
@@ -20,6 +22,10 @@ const RequestSchema = Yup.object().shape({
 export default function Home() {
   const [showDropDown, setShowDropDown] = useState(false);
   const [gender, setGender] = useState();
+  const [loading, setLoading] = useState(false);
+  const {alert:Alert} = useContext(AlertContext)
+
+
 
   const init = {
     space_type: "",
@@ -31,9 +37,23 @@ export default function Home() {
     about_cohabitation: "",
   }
 
-
   const handleRequest = (values: Object) => {
-    console.log(values)
+    setLoading(true)
+    Api.post('/send-requet',values).then((res)=>{
+      setLoading(false)
+      Alert({
+        title:"Request created",
+        type:'success',
+        visible:true
+      })
+    }).catch((err)=>{
+      setLoading(false)
+      Alert({
+        title:"Opps, something went wrong",
+        type:'error',
+        visible:true
+      })
+    })
   }
 
   const genderList = [
@@ -44,8 +64,9 @@ export default function Home() {
 
 
   return (
-    <ScrollView>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <KeyboardAvoidingView style={{flex:1}} keyboardVerticalOffset={70} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+       {loading && <Loading />}
+       <ScrollView>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
           <View style={{ margin: 20 }}>
@@ -207,8 +228,8 @@ export default function Home() {
             </Formik>
           </View>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
     </ScrollView>
+      </KeyboardAvoidingView>
   );
 }
 

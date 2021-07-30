@@ -25,4 +25,37 @@ const theme = {
   }
 };
 
+
+export const customAlertStyle={
+   error:{
+     icon:{
+       color:'red',
+       name:'warning-outline'
+     },
+     text:{
+       color:'red'
+     }
+   },
+
+   success:{
+    icon:{
+      color:'green',
+      name:'checkmark-circle-outline'
+    },
+    text:{
+      color:'green'
+    }
+  },
+
+  info:{
+    icon:{
+      color:'blue',
+      name:'information-circle-outline'
+    },
+    text:{
+      color:'blue'
+    }
+  }
+}
+
 export default theme;

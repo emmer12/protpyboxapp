@@ -1,29 +1,44 @@
 import * as React from 'react';
-import { View, StyleSheet,Animated,TouchableOpacity } from 'react-native';
-import {Add} from "../icons"
+import { View, StyleSheet,Animated,TouchableOpacity,Text,Dimensions } from 'react-native';
+import {Add,Chat} from "../icons"
 
+
+const {width}=Dimensions.get('window')
 
 
 interface CreateI {
-      color:string
+      color:string,
+      open:boolean
     }
-const Create=({color}:CreateI)=>{
+const Create=({color,open}:CreateI)=>{
    
-  const had=()=>{
-      alert()
-  }
+
   
    return (
-    <TouchableOpacity style={styles.container} onPress={had}>
-      <Add color={color} />
-   </TouchableOpacity>
+    <View style={styles.container}>
+      <View style={styles.item}>
+          <Text>List</Text> 
+      </View>
+      <Add color={color} /> 
+   </View>
    )
 }
 
 const styles=StyleSheet.create({
    container:{
-       zIndex:99
+       position:'absolute',
+       alignItems:'center'
    },
+   item:{
+     position:'absolute',
+     backgroundColor:'red',
+     padding:10,
+     bottom:0,
+     height:width,
+     width,
+     zIndex:999
+     
+   }
   
 })
 

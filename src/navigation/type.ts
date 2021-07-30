@@ -43,4 +43,5 @@ export type AuthType={
   ListDetailsScreen:{type:string};
   CreateListing:undefined;
   CreateRequest:undefined;
+  UploadImage:undefined
 }

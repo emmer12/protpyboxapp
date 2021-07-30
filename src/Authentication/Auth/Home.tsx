@@ -12,7 +12,7 @@ export default function Home({navigation}:any) {
 
 
   const [listing, setListing] = React.useState([]); 
-  const [requests, setRequest] = React.useState([1,2,3]); 
+  const [requests, setRequest] = React.useState([{id:1},{id:2},{id:3}]); 
   const [loading, setLoading] = React.useState(false); 
 
   useEffect(() => {
@@ -31,11 +31,11 @@ const getListing=()=>{
 
 
 
-const renderItem = ({ item }:any) => (
+const renderItem = ({ item }:{item:{id:number}}) => (
   <ProptyBox list={item} navigation={navigation} />
 );
 const requestItem = ({ item }:any) => (
-   <RequestCard request={item} />
+   <RequestCard from="home" request={item} />
 );
 
 
@@ -52,7 +52,7 @@ const requestItem = ({ item }:any) => (
           horizontal={true}         
           data={requests}
           renderItem={requestItem}
-          keyExtractor={(item) => item?.id?.toString()}
+          keyExtractor={(item) => `request-${item.id?.toString()}`}
          />  
         </View>
 
@@ -60,7 +60,7 @@ const requestItem = ({ item }:any) => (
           <FlatList
           data={listing}
           renderItem={renderItem}
-          keyExtractor={(item) => item?.id?.toString()}
+          keyExtractor={(item) => `listing-${item.id?.toString()}`}
          />
         </View>
       </View>

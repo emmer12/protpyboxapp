@@ -1,0 +1,247 @@
+
+
+import Api from './index'
+import axios from 'axios';
+
+const registerUser=(data)=>{
+    return Api.post('/register',data)
+}
+
+const updateUser=(data)=>{
+    return Api.patch('/update-user',data)
+}
+const changePass=(data)=>{
+    return Api.post('/change-pass',data)
+}
+const updateList=(data)=>{
+    return Api.patch('/update-listing',data)
+}
+
+
+const loginUser=(data)=>{
+    return Api.post('/login',data)
+}
+
+const verifyEmail=(data)=>{
+    return Api.get('email-verification?id='+data.id+'&hash='+data.hash)
+}
+
+const getListing=(state,data)=>{
+    let url = state.token ? '/all-listing-by-location' : 'all-listing-for-guest'
+    return Api.get(url,{params:data})
+}
+
+const getUser=()=>{
+    return Api.get('auth-user');
+}
+
+const getListId=(id)=>{
+    return Api.get('get-list-by-id/'+id);
+}
+const getRequestById=(id)=>{
+    return Api.get('get-request-by-id/'+id);
+}
+
+
+const createList=(data)=>{
+    return Api.post('/create-listing',data)
+}
+
+const deleteList=(data)=>{
+    return Api.delete('/delete-listing/'+data)
+}
+
+const sendRequest=(data)=>{
+    return Api.post('/send-request',data)
+}
+const socialSignUp=(provider)=>{
+    return Api.get('/sign-in/'+provider);
+}
+
+const loginUpSocial=(payload,provider)=>{
+    return Api.get('/sign-in/'+provider+'/redirect', {
+        params: payload
+    })
+}
+const setupOther=(data)=>{
+    return Api.post('/other-setup',data)
+}
+const setupOtherSign=(data)=>{
+    return Api.post('/other-setup-signup',data)
+}
+const resetPasswordRequest=(data)=>{
+    return Api.post('/request-password-reset',data)
+}
+
+const resetPassword=(data)=>{
+    return Api.post('/reset-password',data)
+}
+
+const getRequestLimit=(state)=>{
+    let url = state.token ? '/all-request-limit-by-location' : '/all-request-limit-guest'
+    return Api.get(url)
+}
+
+const getRequest=(state,data)=>{
+    let url = state.token ? '/all-request-by-location' : '/all-request-guest'
+    return Api.get(url,{params:data})
+}
+
+const getTags=()=>{
+    return Api.get('/listing-tags')
+}
+
+const getState=()=>{
+ return axios.get('http://locationsng-api.herokuapp.com/api/v1/states');
+}
+
+const filterTag=(data)=>{
+    return Api.get('/all-listing-by-tag',{
+        params:data
+    })
+}
+const filterLocation=(data)=>{
+    return Api.get('/all-listing-by-location-filter',{
+        params:data
+    })
+}
+const filterRLocation=(data)=>{
+    return Api.get('/all-request-by-location-filter',{
+        params:data
+    })
+}
+const filterRange=(data)=>{
+    return Api.get('/filter-range',{
+        params:data
+    })
+}
+const filterReqRange=(data)=>{
+    return Api.get('/filter-request-range',{
+        params:data
+    })
+}
+
+const searchListing=(data)=>{
+    return Api.get('/search-listing',{
+        params:data
+    })
+}
+
+
+const searchRequest=(data)=>{
+    return Api.get('/search-request',{
+        params:data
+    })
+}
+
+
+const uploadFile=(data)=>{
+    return Api.post('/upload-file',data)
+}
+
+
+const uploadVFile=(data)=>{
+    return Api.post('/upload-v-file',data)
+}
+
+const viewList=(data)=>{
+    return Api.post('/create-views',{id:data})
+}
+
+const verifyId=(data)=>{
+    return Api.post('/verify-id',data)
+}
+
+const getUserById=(data)=>{
+    return Api.get('/get-user-by-id',{
+        params:data
+    })
+}
+
+const createChat=(data)=>{
+    return Api.post('/create-chat',data);
+}
+
+
+const sendChat=(data)=>{
+    return Api.post('/send-chat',data);
+}
+
+const getChats=(data)=>{
+    return Api.get('/get-chats',{
+        params:data
+    })
+}
+
+
+const makePayment=(data)=>{
+    return Api.get('/verify-payment',{
+        params:data
+    })
+}
+
+const getMessage=(data)=>{
+    return Api.get('/get-chats-msg',{
+        params:data
+    })
+}
+
+
+const checkChat=(data)=>{
+return Api.get('/check-chat',{
+        params:data
+    })
+}
+
+
+
+const markChat=()=>{
+return Api.get('/mark-chat');
+}
+
+// M 100 350 Q 0 250 100 150 L 250 100 Q 450 50 500 150 Q 550 350 450 450 Q 400 500 250 400 Z
+export default {
+    registerUser,
+    updateUser,
+    loginUser,
+    verifyEmail,
+    getUser,
+    getListing,
+    getListId,
+    createList,
+    deleteList,
+    socialSignUp,
+    loginUpSocial,
+    setupOther,
+    setupOtherSign,
+    sendRequest,
+    resetPasswordRequest,
+    resetPassword,
+    getRequestLimit,
+    getRequest,
+    getRequestById,
+    getTags,
+    getState,
+    filterTag,
+    filterLocation,
+    filterRLocation,
+    uploadFile,
+    updateList,
+    searchListing,
+    searchRequest,
+    filterRange,
+    filterReqRange,
+    viewList,
+    verifyId,
+    uploadVFile,
+    getUserById,
+    sendChat,
+    getChats,
+    createChat,
+    makePayment,
+    getMessage,
+    checkChat,
+    markChat,
+    changePass
+
+}

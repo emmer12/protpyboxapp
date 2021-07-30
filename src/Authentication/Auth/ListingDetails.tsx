@@ -3,8 +3,7 @@ import { View, StyleSheet,Dimensions,FlatList, SafeAreaView,TouchableOpacity,Sta
 import gstyle from "./../../style"
 import { Avatar, Button,Text, Title, Paragraph } from 'react-native-paper';
 import { ProptyBox } from './../../components'
-import Api from '../../api';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Api, { baseURL } from '../../api';
 import { Chat } from "../../icons/"
 
 
@@ -35,7 +34,7 @@ export default function ListDetails({route}) {
 
 
   const renderItem = ({ item }) => {
-    const imageUrl=`https://proptybox.com/uploads/listing/${item}`
+    const imageUrl=`${baseURL}/uploads/listing/${item.filename}`
     return (<Image
       style={{ width, height: height * 0.3 }}
       source={{uri:imageUrl} }
@@ -55,6 +54,7 @@ export default function ListDetails({route}) {
         decelerationRate={0}
         bounces={false}
         pagingEnabled={true}
+        
         
       />
         </View>
