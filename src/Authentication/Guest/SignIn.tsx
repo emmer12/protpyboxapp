@@ -1,12 +1,12 @@
 import React,{useState} from 'react';
 import { View, StyleSheet,Dimensions } from 'react-native';
 import { TextInput,Button,Text,HelperText,Caption  } from 'react-native-paper';
-import {AuthHeader} from './../../components';
-import gstyle from "./../../style"
+import {AuthHeader} from '../../components';
+import gstyle from "../../style"
 import { Formik } from 'formik';
 import Api from '../../api';
 import { saveToken } from '../../store/async';
-import AuthContext from './../../store/context'
+import AuthContext from '../../store/context'
 import { AlertContext } from '../../context/GlobalAlert';
 
 

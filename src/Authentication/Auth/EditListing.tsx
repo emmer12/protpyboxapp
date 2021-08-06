@@ -5,7 +5,7 @@ import gstyle from "../../style"
 
  const { width, height } = Dimensions.get('window')
 
-export default function Home() {
+export default function EditListing() {
 
   return (
     <View>

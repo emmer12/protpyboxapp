@@ -1,8 +1,8 @@
 import React, { useState,useEffect } from 'react';
 import { View, Text, StyleSheet, Dimensions, ScrollView,SafeAreaView,FlatList } from 'react-native';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
-import gstyle from "./../../style"
-import { ProptyBox,RequestCard,Banner } from './../../components'
+import gstyle from "../../style"
+import { ProptyBox,RequestCard,Banner } from '../../components'
 import Api from '../../api';
 
 
@@ -12,7 +12,7 @@ export default function Home({navigation}:any) {
 
 
   const [listing, setListing] = React.useState([]); 
-  const [requests, setRequest] = React.useState([{id:1},{id:2},{id:3}]); 
+  const [requests, setRequest] = React.useState([]); 
   const [loading, setLoading] = React.useState(false); 
 
   useEffect(() => {

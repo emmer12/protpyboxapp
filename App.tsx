@@ -10,15 +10,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthReducer from './src/store/Reducers/auth'
 import AuthContext from './src/store/context'
 
-import { AuthenticationNavigator,AuthNavigator } from './src/navigation';
+import { AuthenticationNavigator,DrawerAuth } from './src/navigation';
 import { AlertProvider } from './src/context/GlobalAlert';
 import { GlobalLoading } from './src/components/Loading';
+import Api from "./src/api"
 
 export default function App() {
   const initialState = {
     userToken: null,
     isSignout: false,
     isLoading: true,
+    user:null
   }
   const [state, dispatch] = React.useReducer(AuthReducer, initialState)
 
@@ -26,9 +28,17 @@ export default function App() {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let token;
+      let user
 
       try {
         token = await AsyncStorage.getItem('token');
+        user=await Api.get('auth-user');
+        user=user.data.data
+
+        dispatch({ type: 'FETCH_TOKEN', token });
+        dispatch({ type: 'FETCH_USER', user });
+
+
       } catch (e) {
         // Restoring token failed
       }
@@ -37,7 +47,9 @@ export default function App() {
 
       // This will switch to the App screen or Auth screen and this loading
       // screen will be unmounted and thrown away.
-      dispatch({ type: 'FETCH_TOKEN', token });
+     
+
+    
     };
 
     bootstrapAsync();
@@ -70,12 +82,14 @@ export default function App() {
       signUp: async (data: string) => {
         dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
+      // user:!state.isLoading && state.user
     }),
     []
   );
 
+  console.log(state.user)
   return (
-    <AuthContext.Provider value={authContext} >
+    <AuthContext.Provider value={{authContext,user:state.user}} >
       <PaperProvider theme={theme}>
         <AlertProvider customStyle={customAlertStyle}>
         <NavigationContainer>
@@ -83,8 +97,9 @@ export default function App() {
             state.isLoading ? <GlobalLoading  /> :
               state.token ?
                 <>
-                  <StatusBar backgroundColor='' />
-                  <AuthNavigator />
+                  <StatusBar
+                  barStyle="light-content" />
+                  <DrawerAuth />
                 </>
                 :
                 <AuthenticationNavigator />

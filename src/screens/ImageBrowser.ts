@@ -1,1 +1,0 @@
-export { ImageBrowser as ImageBrowser } from '../Authentication/Auth' 

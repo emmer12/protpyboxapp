@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StyleSheet,Dimensions } from 'react-native';
 import { TextInput,Button,Text,Title,Subheading,HelperText} from 'react-native-paper';
-import {AuthHeader} from './../../components';
+import {AuthHeader} from '../../components';
 import Api from '../../api';
-import gstyle from "./../../style"
+import gstyle from "../../style"
 import { Formik } from 'formik';
 
 

@@ -7,8 +7,8 @@ import Api from '../../api';
 import DropDown from 'react-native-paper-dropdown';
 import * as Yup from 'yup';
 import RNPickerSelect from 'react-native-picker-select';
-import { Loading } from "./../../components/Loading";
-import {AlertContext} from './../../context/GlobalAlert'
+import { Loading } from "../../components/Loading";
+import {AlertContext} from '../../context/GlobalAlert'
 
 
 const { width, height } = Dimensions.get('window')

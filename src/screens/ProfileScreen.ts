@@ -1,1 +1,0 @@
-export { Profile as ProfileScreen } from '../Authentication/Auth' 

@@ -1,20 +1,23 @@
 import React,{useState,useEffect} from 'react';
-import { View, StyleSheet,Dimensions,FlatList, SafeAreaView,TouchableOpacity,StatusBar, ActivityIndicator,Image,ScrollView } from 'react-native';
-import gstyle from "./../../style"
+import { View, StyleSheet,Dimensions,FlatList, SafeAreaView,TouchableOpacity,StatusBar, ActivityIndicator,Image,ScrollView,Linking } from 'react-native';
+import globalStyle from "../../style"
 import { Avatar, Button,Text, Title, Paragraph } from 'react-native-paper';
-import { ProptyBox } from './../../components'
+import { ProptyBox } from '../../components'
 import Api, { baseURL } from '../../api';
-import { Chat } from "../../icons/"
+import { Chat } from "../../icons"
+import { ListingType } from '../type';
+import { ListingDetailRoute } from '../../navigation/type';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import theme from '../../theme';
 
 
  const { width, height } = Dimensions.get('window')
 
 
 
-export default function ListDetails({route}) {
-
-
-  const [list, setList] = React.useState([]); 
+export default function ListDetails({route}:ListingDetailRoute) {
+  
+  const [list, setList] = React.useState<ListingType>({}); 
   const [loading, setLoading] = React.useState(false); 
 
   useEffect(() => {
@@ -33,7 +36,7 @@ export default function ListDetails({route}) {
 
 
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({ item }:any) => {
     const imageUrl=`${baseURL}/uploads/listing/${item.filename}`
     return (<Image
       style={{ width, height: height * 0.3 }}
@@ -60,21 +63,24 @@ export default function ListDetails({route}) {
         </View>
      
       <View style={styles.con}>
-           <View style={gstyle.details}>
-                 <View style={gstyle.left}>
+           <View style={globalStyle.details}>
+                 <View style={globalStyle.left}>
                     <Title> {list.space_type}</Title>
                     <Paragraph> {list.space_address}</Paragraph>
                  </View>
 
-                 <View style={gstyle.right}>
-                   <Button mode="outlined">&#8358;{list.rent}</Button>
-                   <Chat style={{marginHorizontal:10}} />
-                 </View>             
+                 <View style={globalStyle.right}>
+                   <Button>&#8358;{list.rent}</Button>
+                   <Chat style={{}} />
+                   <TouchableOpacity style={styles.btn} onPress={()=>Linking.openURL(`tel:${list.user.phoneNo}`)} >
+                    <MaterialCommunityIcons name="phone" size={24} color={'#0D50BD'} />
+                   </TouchableOpacity>
+                 </View>   
                  
              </View>
 
-               <View style={[gstyle.row,gstyle.rowTint]}>
-                     <View style={gstyle.p50}>
+               <View style={[globalStyle.row,globalStyle.rowTint]}>
+                     <View style={globalStyle.p50}>
                        <Text>Rent</Text>
                       </View>
                      <View>
@@ -82,8 +88,8 @@ export default function ListDetails({route}) {
                      </View>
                  </View>
 
-                 <View style={gstyle.row}>
-                     <View style={gstyle.p50}>
+                 <View style={globalStyle.row}>
+                     <View style={globalStyle.p50}>
                        <Text>Property type</Text>
                       </View>
                      <View>
@@ -91,8 +97,8 @@ export default function ListDetails({route}) {
                      </View>
                  </View>
 
-                 <View style={[gstyle.row,gstyle.rowTint]}>
-                     <View style={gstyle.p50}>
+                 <View style={[globalStyle.row,globalStyle.rowTint]}>
+                     <View style={globalStyle.p50}>
                        <Text>Space location</Text>
                       </View>
                      <View>
@@ -101,8 +107,8 @@ export default function ListDetails({route}) {
                  </View>
 
 
-                 <View style={gstyle.row}>
-                     <View style={gstyle.p50}>
+                 <View style={globalStyle.row}>
+                     <View style={globalStyle.p50}>
                        <Text>Bathroom type</Text>
                       </View>
                      <View>
@@ -111,8 +117,8 @@ export default function ListDetails({route}) {
                  </View>
 
 
-                 <View style={[gstyle.row,gstyle.rowTint]}>
-                     <View style={gstyle.p50}>
+                 <View style={[globalStyle.row,globalStyle.rowTint]}>
+                     <View style={globalStyle.p50}>
                        <Text>Available from</Text>
                      </View>
                      <View>
@@ -120,8 +126,8 @@ export default function ListDetails({route}) {
                      </View>
                  </View>
 
-                 <View style={[gstyle.row]}>
-                     <View style={gstyle.p50}>
+                 <View style={[globalStyle.row]}>
+                     <View style={globalStyle.p50}>
                        <Text>Preferred Gender</Text>
                      </View>
                      <View>
@@ -129,22 +135,15 @@ export default function ListDetails({route}) {
                      </View>
                  </View>
 
-                 <View style={[gstyle.row,gstyle.rowTint]}>
-                     <View style={gstyle.p50}>
+                 <View style={[globalStyle.row,globalStyle.rowTint]}>
+                     <View style={globalStyle.p50}>
                        <Text>About space</Text>
                      </View>
-                     <View style={gstyle.p50}>
+                     <View style={globalStyle.p50}>
                        <Text>{list.about_property }</Text>
                      </View>
                  </View>
-
-
-
-
-
-
-                 
-      </View>
+          </View>
       </SafeAreaView>
 
     </ScrollView>
@@ -160,6 +159,16 @@ const styles = StyleSheet.create({
   con:{
     padding:10,
     backgroundColor:'#fff'
+  },
+  btn:{
+    borderColor:'#0D50BD',
+    borderWidth:2,
+    width:32,
+    height:32,
+    borderRadius:16,
+    justifyContent:'center',
+    alignItems:'center',
+    marginHorizontal:10,
   }
 
 })

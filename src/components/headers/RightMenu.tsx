@@ -2,10 +2,11 @@ import * as React from 'react';
 import { View, StyleSheet,TouchableOpacity } from 'react-native';
 import { Text,Title,Searchbar,Button} from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const Right=()=>{
-  
+   const navigation=useNavigation()
    return (
     <View style={styles.container}>
         <TouchableOpacity style={styles.item}>
@@ -14,7 +15,7 @@ const Right=()=>{
         <TouchableOpacity style={styles.item}>
         <Ionicons name="md-search" size={26} color="grey" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item} >
+        <TouchableOpacity style={styles.item} onPress ={ ( ) => navigation.openDrawer()}>
         <Ionicons name="md-list" size={26} color="grey" />
         </TouchableOpacity>
    </View>

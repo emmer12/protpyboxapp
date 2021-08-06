@@ -1,23 +1,11 @@
 import * as React from 'react';
-
 import 'react-native-gesture-handler';
 import { createStackNavigator,CardStyleInterpolators } from '@react-navigation/stack';
-import { Onboarding } from "../Authentication"
-import { SignInScreen } from "../screens/SignInScreen"
-import { SignUpScreen } from "../screens/SignUpScreen"
-import { HomeScreen } from "../screens/HomeScreen"
-import { CreateScreen } from "../screens/CreateScreen"
-import { ListingScreen } from "../screens/ListingScreen"
-import { ListDetailsScreen } from "../screens/ListDetailsScreen"
-import { CreateListingScreen } from "../screens/CreateListing"
-import { CreateRequestScreen } from "../screens/CreateRequest"
-import { ImageUploadScreen } from "../screens/ImageUpload"
-import { ImageBrowser } from "../screens/ImageBrowser"
-import { RequestScreen } from "../screens/RequestScreen"
-import { ProfileScreen } from "../screens/ProfileScreen"
+import { Onboarding } from "../Authentication/Guest"
+import { EditAccountScreen,EditListingScreen,EditProfileScreen,UpdateListScreen,UpdateRequestScreen,ImageBrowser,CreateScreen,ProfileScreen,SignInScreen,AboutScreen,HomeScreen,CreateListingScreen,CreateRequestScreen,ImageUploadScreen,ListDetailsScreen,ListingScreen,PrivateScreen,RequestScreen,SettingScreen,SignUpScreen } from "../screens"
 import { Title } from 'react-native-paper';
 import {Home,List,Request,Account,Add} from "../icons"
-import {Create } from './../components';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 
 
@@ -32,6 +20,8 @@ import {AuthenticationType,TapType,AuthType } from './type'
 const AuthenticationStack=createStackNavigator<AuthenticationType>();
 const AuthStack=createStackNavigator<AuthType>();
 const Tab = createMaterialBottomTabNavigator<TapType>()
+const Drawer = createDrawerNavigator();
+
 
 export const AuthenticationNavigator=()=>{
    return (
@@ -115,9 +105,9 @@ export const AuthNavigator=()=>{
   return (
     <AuthStack.Navigator screenOptions={{gestureEnabled: true,gestureDirection: 'horizontal',transitionSpec: {open: config,close: config},cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS}}>
          <AuthStack.Screen 
-         name="HomeScreen"  
-         component={HomeTabNavigator}
-         options={{ 
+          name="HomeScreen"  
+          component={HomeTabNavigator}
+          options={{ 
            headerTitle: props => <Logo {...props} />,
            headerRight:props => <RightMenu {...props} />,
           }}
@@ -127,7 +117,7 @@ export const AuthNavigator=()=>{
 
          <AuthStack.Screen name="ListDetailsScreen" component={ListDetailsScreen} 
          options={({route})=>({
-          headerTitle: props => (<Title>{cap(route.params.type)}</Title>)
+          headerTitle: props => (<Title>{cap(route.params.id)}</Title>)
          })}
          />
 
@@ -153,6 +143,43 @@ export const AuthNavigator=()=>{
         headerTitle: props => (<Title>Create Request</Title>)
       })}
       />
+
+       <AuthStack.Screen name="EditAccount" component={EditAccountScreen} 
+      options={()=>({
+        headerTitle: () => (<Title>Account Settings</Title>)
+      })}
+      />
+
+     <AuthStack.Screen name="EditProfile" component={EditProfileScreen} 
+      options={()=>({
+        headerTitle: () => (<Title>Profile Settings</Title>)
+      })}
+      />
+
+      
+
+        <AuthStack.Screen 
+         name="SettingScreen"  
+         component={SettingScreen}
+         options={{ 
+           headerRight:props => <RightMenu {...props} />,
+           headerTitle: props => (<Title>Settings</Title>)
+
+          }}
+         />
      </AuthStack.Navigator>
    )
 }
+
+
+
+export const DrawerAuth=()=> {
+  return (
+      <Drawer.Navigator initialRouteName="AuthNavigator">
+        <Drawer.Screen name="Home" component={AuthNavigator} />
+        <Drawer.Screen name="About" component={AboutScreen} />
+        <Drawer.Screen name="Private" component={PrivateScreen} />
+      </Drawer.Navigator>
+  );
+}
+

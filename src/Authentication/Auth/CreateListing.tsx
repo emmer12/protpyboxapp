@@ -1,7 +1,7 @@
 import React, { useState,useEffect, useContext } from 'react';
 import { View, StyleSheet, Dimensions, Picker, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ScrollView,TouchableOpacity,Animated,Image } from 'react-native';
 import gstyle from "../../style"
-import { TextInput, Button, Text, HelperText, Caption, Colors } from 'react-native-paper';
+import { TextInput, Button, Text, HelperText, Caption, Colors, Title } from 'react-native-paper';
 import { Formik } from 'formik';
 import Api from '../../api';
 import * as Yup from 'yup';
@@ -9,13 +9,16 @@ import RNPickerSelect from 'react-native-picker-select';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import theme from '../../theme';
 import * as ImagePicker from 'expo-image-picker';
-import {AlertContext} from './../../context/GlobalAlert'
+import {AlertContext} from '../../context/GlobalAlert'
+import AutocompleteTags from 'react-native-autocomplete-tags'
+import { ListingType } from '../type';
+
 
 // import DropDown from 'react-native-paper-dropdown';
 // import { DatePickerModal } from 'react-native-paper-dates';
 // import { ImageBrowser } from 'expo-image-picker-multiple';
 
-
+const suggestions = ['ensuite', 'apartment', 'rent', 'cohab','space shareing','self-contain','1-bedroom-flat','2-bedroom-flat','3-bedroom-flat'];
 const { width, height } = Dimensions.get('window')
 
 const RequestSchema = Yup.object().shape({
@@ -36,11 +39,14 @@ export default function Home({navigation}:any) {
 
   const [date, setDate] = useState(new Date(1598051730000));
   const [mode, setMode] = useState('date');
+  const [tags, setTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
   let AnimatedVal=new Animated.Value(1)
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const {alert:Alert} = useContext(AlertContext)
+ 
+  const labelExtractor = (tag: string) => tag;
 
   const [activeIndex,setActive]=useState(1)
 
@@ -93,12 +99,12 @@ export default function Home({navigation}:any) {
 
 
 
-  const handleRequest = (values: Object) => {
+  const handleRequest = (values:ListingType ) => {
     let day=new Date(date).getDate()
     let month=new Date(date).getMonth() + 1
     let year=new Date(date).getFullYear()
     values.available_from =`${year}-${month}-${day}`
-
+    values.selectedTags=tags
     setLoading(true)
     Api.post('/create-listing',values).then((res)=>{
       setLoading(false)
@@ -195,8 +201,6 @@ export default function Home({navigation}:any) {
             >
               {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
                 <View>
-
-
                   {/* Tab 1 */}
 
 
@@ -249,6 +253,7 @@ export default function Home({navigation}:any) {
                             { label: 'Roomies', value: 'Roomies' },
                           ]}
                         />
+                        
                       )}
 
                     />
@@ -412,7 +417,7 @@ export default function Home({navigation}:any) {
                   (<View>
 
                   <View style={gstyle.formControl}>
-                      <TextInput
+                      {/* <TextInput
                         onChangeText={handleChange('rent')}
                         onBlur={handleBlur('rent')}
                         value={values.rent}
@@ -424,7 +429,16 @@ export default function Home({navigation}:any) {
                       />
                       {errors.rent && touched.rent ? (
                         <HelperText type="error">{errors.rent}</HelperText>
-                      ) : null}
+                      ) : null} */}
+                      <View style={{backgroundColor:theme.colors.surface,padding:10}}>
+                      <Text style={{fontSize:16}}>Tags </Text>
+                      <AutocompleteTags
+                            tags={tags}
+                            suggestions={suggestions}
+                            onChangeTags={setTags}
+                            labelExtractor={labelExtractor}
+                          />
+                      </View>
                     </View>
 
                     <View style={gstyle.formControl} >

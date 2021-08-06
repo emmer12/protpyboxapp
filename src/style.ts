@@ -1,4 +1,3 @@
-import { color } from "@shopify/restyle";
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
@@ -14,7 +13,7 @@ export default StyleSheet.create({
         color:'#444'
     },
     formControl:{
-        marginVertical:10
+        marginVertical:10,
     },
     details:{
         // flex:1,

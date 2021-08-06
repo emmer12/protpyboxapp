@@ -1,22 +1,20 @@
 import * as React from 'react';
-import { View, StyleSheet,Animated,Text } from 'react-native';
+import { View, StyleSheet,Animated,Text,Dimensions } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { baseURL } from '../api';
+import { ListingType } from '../Authentication/type';
+import { ListingNavigation } from '../navigation/type';
 
 
 interface ProptyBox {
-    list:{
-        id:number;
-        images:any;
-        space_type:string;
-        space_address:string;
-        views:[];
-        rent:number;
-    };
-    navigation:any
+    list:ListingType
+    navigation:ListingNavigation
 }
+
+const {width}=Dimensions.get('window')
+
 const ProptyBox=({list,navigation}:ProptyBox)=>{
     
     const LeftContent = (props:any)=> <Avatar.Icon {...props} icon="folder" />
@@ -24,7 +22,7 @@ const ProptyBox=({list,navigation}:ProptyBox)=>{
     console.log(list.images[0]?.filename)
    return (
     <View style={styles.cardCon}>
-       <Card style={{backgroundColor:'#fff'}} >
+       <Card style={{backgroundColor:'#fff',width:width-10*2}} >
             {/* <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} /> */}
             <View style={styles.top}>
                 <Button>Boosted {list.id}</Button>
@@ -36,8 +34,8 @@ const ProptyBox=({list,navigation}:ProptyBox)=>{
             <Card.Content>
             <Title>{list.space_type }</Title>
 
-            <Title style={{color:'#555'}}>{ list.space_address }</Title>
-            <Paragraph>Card content Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga, ex repellendus nisi iste dolorem deserunt beatae! Error ratione accusantium provident!</Paragraph>
+            <Title style={{color:'#777'}}>{ list.space_address }</Title>
+            <Paragraph numberOfLines={2}>Card content Lorem ipsum dolor sit, amet consectetur adipisicing elit. Fuga, ex repellendus nisi iste dolorem deserunt beatae! Error ratione accusantium provident!</Paragraph>
             </Card.Content>
             <View style={styles.top}>
                 <Button><MaterialCommunityIcons name='decagram' size={26} /></Button>

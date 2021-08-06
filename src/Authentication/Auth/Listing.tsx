@@ -1,17 +1,17 @@
 import React,{useState,useEffect} from 'react';
 import { View,Text, StyleSheet,Dimensions,FlatList, SafeAreaView,TouchableOpacity,StatusBar, ActivityIndicator } from 'react-native';
-import gstyle from "./../../style"
-import { ProptyBox } from './../../components'
+import gstyle from "../../style"
+import { Empty, ProptyBox } from '../../components'
 import Api from '../../api';
-import { NavigationScreenProps } from 'react-navigation';
+import { ListingNavigation } from '../../navigation/type';
+import { ListingType } from '../type';
 
  const { width, height } = Dimensions.get('window')
 
 
 
 
-export default function Listing({navigation}:NavigationScreenProps) {
-
+export default function Listing(navigation:ListingNavigation) {
 
   const [listing, setListing] = React.useState([]); 
   const [loading, setLoading] = React.useState(false); 
@@ -37,15 +37,16 @@ export default function Listing({navigation}:NavigationScreenProps) {
      <SafeAreaView style={styles.container}>
       {
         loading
-
         ?
         <ActivityIndicator size="large" color='grey' style={{justifyContent:'center',alignItems:'center',flex:1
       }} /> 
-        : 
+      : listing.length < 1 ? (
+        <Empty text="Empty Listings" />
+      ) :
         <FlatList
         data={listing}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item:ListingType) => item.id.toString()}
       />
       }
     </SafeAreaView>

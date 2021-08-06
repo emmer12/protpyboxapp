@@ -1,1 +1,0 @@
-export { ListingDetails as ListDetailsScreen } from '../Authentication/Auth' 
