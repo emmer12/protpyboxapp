@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet,Dimensions,View,Text,Animated } from "react-native";
 import style from "../style";
 import { Ionicons } from "@expo/vector-icons";
+import ActionCard from "../components/ActionCard";
 
 
 const {width}=Dimensions.get('window')
@@ -19,8 +20,16 @@ interface AlertInterface{
     visible:boolean;
 }
 
+interface ActionInterface{
+    id?:number,
+    show:boolean,
+    navigation?:any
+}
+
+
 interface ContextInterface{
     alert:(value:AlertInterface)=>void
+    action:(value:ActionInterface)=>void
 }
 
 const defaultValue:AlertInterface={
@@ -30,7 +39,7 @@ const defaultValue:AlertInterface={
     action:undefined,
     confirm:false,
     position:'top',
-    visible:false
+    visible:false,
 }
 
 
@@ -39,6 +48,9 @@ export const AlertContext=React.createContext<ContextInterface>({alert})
 export const AlertProvider=({customStyle,children}:any)=>{
     
     const [value,setValue]=useState(defaultValue)
+    const [show,setShow]=useState(false)
+    const [listId,setListId]=useState<any>(null)
+    const [navigation,setNav]=useState<any>(null)
     let {title,body,type,position,confirm,action,visible}=value
     let AnimatedVal=new Animated.Value(0)
     
@@ -63,9 +75,7 @@ export const AlertProvider=({customStyle,children}:any)=>{
         }).start()
      },[value])
     
-    const setAlert=({title='',type='primary',action=undefined,confirm=false,body='',position='top',visible=false}:AlertInterface)=>{
-        
-        
+    const setAlert=({title='',type='primary',action=undefined,confirm=false,body='',position='top',visible=false}:AlertInterface)=>{ 
         setValue({
              title,
              body,
@@ -75,12 +85,13 @@ export const AlertProvider=({customStyle,children}:any)=>{
              position,
              visible
          })
-         
     }
-    
-  
 
-    
+    const setAction=({show,id,navigation}:ActionInterface)=>{
+        setShow(show)
+        id && setListId(id)
+        navigation && setNav(navigation)
+    }
 
     const AlertRender=()=>{
         let containerStyle=[styles.AlertContainer]
@@ -115,6 +126,7 @@ export const AlertProvider=({customStyle,children}:any)=>{
             ]
         }) : containerStyle.push(styles.center)
        return (
+           
          <Animated.View style={containerStyle}>
              <View style={styles.inner}>
                  <View style={[styles.icon,{marginRight:10}]}>
@@ -126,17 +138,18 @@ export const AlertProvider=({customStyle,children}:any)=>{
          
         }
          
+
    
 
 
     return (
-        <AlertContext.Provider value={{alert:setAlert}}>
+        <AlertContext.Provider value={{alert:setAlert,action:setAction}}>
              {children}
              {
-                 visible && AlertRender()
+                 visible && AlertRender()   
              }
 
-            
+             {show && <ActionCard {...{listId,navigation}}  />}
         </AlertContext.Provider>
     )
 }

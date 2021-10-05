@@ -1,34 +1,50 @@
 import * as React from 'react';
 import { View, StyleSheet,Animated,Text,Dimensions } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { Avatar, Button, Card, Title, Paragraph, TouchableRipple } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { baseURL } from '../api';
 import { ListingType } from '../Authentication/type';
-import { ListingNavigation } from '../navigation/type';
+import { AlertContext } from '../context/GlobalAlert';
+import { ListingAuthNavigation, ListingNavigation } from '../navigation/type';
+import AuthContext from '../store/context';
 
 
 interface ProptyBox {
-    list:ListingType
-    navigation:ListingNavigation
+    list:ListingType;
+    navigation:ListingAuthNavigation;
+    guest?:boolean;
 }
 
-const {width}=Dimensions.get('window')
+const {width,height}=Dimensions.get('window')
 
-const ProptyBox=({list,navigation}:ProptyBox)=>{
+const ProptyBox=({list,navigation,guest}:ProptyBox)=>{
     
     const LeftContent = (props:any)=> <Avatar.Icon {...props} icon="folder" />
     const imageUrl=list && list.images && `${baseURL}/uploads/listing/${list.images[0]?.filename}` 
-    console.log(list.images[0]?.filename)
-   return (
+    const { action : Action } = React.useContext(AlertContext);
+    const {user} =React.useContext(AuthContext)
+
+    const ActionMenu=()=>(
+        <View style={styles.actionCon}>
+        <Title>This the action text</Title>
+        </View>
+    )
+  
+  
+    return (
     <View style={styles.cardCon}>
        <Card style={{backgroundColor:'#fff',width:width-10*2}} >
             {/* <Card.Title title="Card Title" subtitle="Card Subtitle" left={LeftContent} /> */}
             <View style={styles.top}>
                 <Button>Boosted {list.id}</Button>
-                <MaterialCommunityIcons name="dots-vertical" size={26} />
+
+               {user?.id === list.user.id && (<TouchableRipple onPress={()=>Action({show:true,id:list.id,navigation})}>
+                   <MaterialCommunityIcons name="dots-vertical" size={26} />
+                </TouchableRipple>)
+               }
             </View>
-            <TouchableWithoutFeedback onPress={() => { navigation.navigate('ListDetailsScreen',{id:list.id,type:list.space_type}) }} >
+            <TouchableWithoutFeedback onPress={() => {guest ? navigation.navigate('GuestListingDetails',{id:list.id ,type:list.space_type,guest}) : navigation.navigate('ListDetailsScreen',{id:list.id ,type:list.space_type,guest}) }} >
               <Card.Cover source={list.images ? { uri:imageUrl } : require('../../assets/meduim-product-placeholder.png') } />
             </TouchableWithoutFeedback>
             <Card.Content>
@@ -46,6 +62,7 @@ const ProptyBox=({list,navigation}:ProptyBox)=>{
                  </View>
             </View>
         </Card>
+
    </View>
    )
 }
@@ -66,7 +83,7 @@ const styles=StyleSheet.create({
     vcount:{
         color:'#aaa',
         marginLeft:5
-    }
+    },
 })
 
 

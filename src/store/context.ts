@@ -1,5 +1,15 @@
 import React from 'react'
+import { UserType } from '../Authentication/type'
 
 
-const AuthContext=React.createContext(undefined)
+interface ContextInterface{
+    user:UserType,
+    authContext:{
+        signUp:(arg:string)=>void,
+        signIn:(arg:string)=>void,
+        signOut:()=>void,
+    }
+}
+
+const AuthContext=React.createContext<ContextInterface>({undefined})
 export default AuthContext

@@ -1,10 +1,15 @@
 import * as React from "react"
 import Svg, { SvgProps, Path } from "react-native-svg"
 
-function Request(props: SvgProps) {
+interface SvgRefined extends SvgProps{
+  size?:number
+}
+
+
+function Request(props: SvgRefined) {
   return (
     <Svg
-      width={24}
+      width={props.size || 24}
       height={24}
       viewBox="0 0 33 32"
       fill="currentColor"

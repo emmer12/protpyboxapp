@@ -11,7 +11,7 @@ import AuthContext from '../../store/context';
 
 export default function Create({navigation}:any) {
 
-  const { signOut } = React.useContext(AuthContext);
+  const  {authContext:{signOut}}  = React.useContext(AuthContext);
 //   onPress={()=>
 //     navigation.navigate({
 //         name: 'UploadImage',
@@ -21,6 +21,11 @@ export default function Create({navigation}:any) {
 //          }
 //    },
 //  })}
+
+
+const sign =()=>{
+  signOut()
+}
   return (
     
     <View style={styles.con}>
@@ -30,11 +35,7 @@ export default function Create({navigation}:any) {
 
         <View style={styles.box}>
             <Button  theme={{ roundness: 3 }} onPress={()=>navigation.navigate('CreateRequest') } mode="contained" >Request</Button>   
-        </View>  
-
-        <View style={styles.box}>
-            <Button  theme={{ roundness: 3 }} color="red" onPress={signOut} mode="contained" >Logout</Button>   
-        </View>     
+        </View>    
     </View>
   );
 }

@@ -9,17 +9,23 @@ export type AuthenticationType={
     Onboarding:undefined;
     SignInScreen:undefined;
     SignUpScreen:undefined;
+    GuestListing:{guest:boolean};
+    GuestListingDetails:{guest:boolean};
+    GuestRequestDetails:{guest:boolean};
+    GuestRequest:{guest:boolean};
+    OtpVerifyScreen:{email:string};
+    
   }
 
-export type OnboardingScreenRoute=RouteProp<AuthenticationType,'Onboarding'>
-
+export type OtpVerifyRoute=RouteProp<AuthenticationType,'OtpVerifyScreen'>
 export type OnboardingScreenNavigation=StackNavigationProp<AuthenticationType,'Onboarding'>
+export type OtpVerifyScreenNavigation=StackNavigationProp<AuthenticationType,'OtpVerifyScreen'>
   
- 
+
+
 export type OnboardingProps={
-       route:OnboardingScreenRoute;
        navigation:OnboardingScreenNavigation
-}  
+}
 
 
 export type TapType={
@@ -32,26 +38,34 @@ export type TapType={
   
  
 export type TapProps={
-       route:OnboardingScreenRoute;
        navigation:OnboardingScreenNavigation
 }
 
+// export type OnboardingScreenNavigation=StackNavigationProp<AuthenticationType,'Onboarding'>
+
+
 export type AuthType={
-  Home:undefined;
-  ListDetailsScreen:{id:string};
+  HomeScreen:undefined;
+  ListDetailsScreen:{id:number,type:string,guest:boolean | undefined};
+  RequestDetailsScreen:{id:number,title:string,guest:boolean | undefined};
   CreateListing:undefined;
   CreateRequest:undefined;
   UploadImage:undefined;
   SettingScreen:undefined;
   ImageBrowser:undefined;
   EditAccount:undefined;
+  SearchScreen:undefined;
+  EditProfile:undefined;
+  EditListing:undefined;
+  Boost:undefined;
 }
 
 export type CreateListingScreenNavigation=StackNavigationProp<AuthType,'CreateListing'>
-export type HomeNavigation=StackNavigationProp<AuthType,'Home'>
+export type HomeNavigation=StackNavigationProp<AuthType,'HomeScreen'>
 export type ListingNavigation=StackNavigationProp<TapType,'Listing'>
 export type RequestNavigation=StackNavigationProp<TapType,'Requests'>
 
+export type ListingAuthNavigation=StackNavigationProp<AuthType,'ListDetailsScreen'>
 export type ListingDetailRoute=RouteProp<AuthType,'ListDetailsScreen'>
 
 

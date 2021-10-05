@@ -43,7 +43,7 @@ export default function Profile({ navigation }: { navigation: any }) {
     Api.get("auth-user")
       .then((res) => {
         setLoading(false);
-        console.log(res.data.data);
+        console.log(res.data.data.email,'useremail');
         setUser(res.data.data);
       })
       .catch((err) => {

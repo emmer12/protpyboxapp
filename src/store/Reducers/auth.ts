@@ -1,37 +1,35 @@
+const AuthReducer = (state: any, action: any) => {
+  switch (action.type) {
+    case "USER_LOGIN_FULFILLED":
+      return {
+        loading:false,
+        token: action.payload.token,
+        user: action.payload.user,
+      };
+      break;
+      break;
+    case "LOADING":
+      return {
+        ...state,
+        isLoading:action.payload
+      };
 
- const AuthReducer=(state:any, action:any)=> {
-    switch (action.type) {
-        case "FETCH_TOKEN":
-            return {
-                ...state,
-                token: action.token,
-                isLoading: false,
-            }
-            break;
-            case "FETCH_USER":
-                return {
-                    ...state,
-                    user: action.user,
-                }
-                break;
-            
-        case "SIGN_IN":
-            return {
-                ...state,
-                token: action.token,
-                isSignout: false,
-            }
-          break;
-          case "SIGN_OUT":
-          return {
-              ...state,
-              token: null,
-              isSignout: true,
-          }
-        default:
-            break;
-    }
-}
+      break;
+    case "SIGN_IN":
+      return {
+        token: action.payload.token,
+        user:action.payload.user,
+      };
+      break;
+    case "SIGN_OUT":
+      return {
+        token: null,
+        isLoading: false,
+        user:null
+      };
+    default:
+      break;
+  }
+};
 
-    
-export default AuthReducer
+export default AuthReducer;

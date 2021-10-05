@@ -30,5 +30,5 @@ const styles = StyleSheet.create({
       alignItems:'center',
       width,
       height
-  },
+  }
 });

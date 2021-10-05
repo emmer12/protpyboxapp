@@ -22,14 +22,20 @@ export default StyleSheet.create({
 
     },
     right:{
-        width:'40%',
+        width:'60%',
         alignItems: 'flex-end',
         justifyContent:'flex-end',
+        flexDirection:'row',
+        paddingHorizontal:10
+        
+    },
+    flex:{
+        alignItems: 'center',
         flexDirection:'row',
         
     },
     left:{
-        width:'60%',
+        width:'40%',
     },
     row:{
         flexDirection:'row',

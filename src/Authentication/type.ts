@@ -22,6 +22,7 @@ export type ListingType={
 }
 
 export type RequestType={
+    id:number;
     space_for:string;
     min_budget:number;
     max_budget:number;

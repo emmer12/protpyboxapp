@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import RNPickerSelect from 'react-native-picker-select';
 import { Loading } from "../../components/Loading";
 import {AlertContext} from '../../context/GlobalAlert'
+import { useNavigation } from '@react-navigation/native';
 
 
 const { width, height } = Dimensions.get('window')
@@ -24,6 +25,7 @@ export default function Home() {
   const [gender, setGender] = useState();
   const [loading, setLoading] = useState(false);
   const {alert:Alert} = useContext(AlertContext)
+  const navigation=useNavigation()
 
 
 
@@ -39,13 +41,17 @@ export default function Home() {
 
   const handleRequest = (values: Object) => {
     setLoading(true)
-    Api.post('/send-requet',values).then((res)=>{
+    Api.post('/send-request',values).then((res)=>{
       setLoading(false)
       Alert({
         title:"Request created",
         type:'success',
         visible:true
       })
+
+      navigation.navigate('Profile');
+
+      
     }).catch((err)=>{
       setLoading(false)
       Alert({
@@ -53,6 +59,8 @@ export default function Home() {
         type:'error',
         visible:true
       })
+
+      console.log(err.response)
     })
   }
 

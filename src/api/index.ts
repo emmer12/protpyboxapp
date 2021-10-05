@@ -8,7 +8,7 @@ let devEndpoint= 'https://api.proptybox.com/api/v1'
 let localEndpoint= 'http://192.168.43.229:8000/api/v1' 
 // 
 const api = axios.create({
-  baseURL:localEndpoint
+  baseURL:production
 });
 
 
@@ -37,6 +37,7 @@ api.interceptors.response.use((response) =>{
       originalRequest._retry = true;
       return AsyncStorage.getItem('token')
           .then(token => {
+
               api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
               originalRequest.headers['Authorization'] = 'Bearer ' + token;
               return axios(originalRequest);
@@ -47,6 +48,12 @@ api.interceptors.response.use((response) =>{
   }
 
 })
+
+
+export const deleteAuth=()=>{
+  delete api.defaults.headers.common['Authorization'];
+  
+}
 
 
 export default api;

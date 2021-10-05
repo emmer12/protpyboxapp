@@ -10,36 +10,42 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthReducer from './src/store/Reducers/auth'
 import AuthContext from './src/store/context'
 
+
 import { AuthenticationNavigator,DrawerAuth } from './src/navigation';
 import { AlertProvider } from './src/context/GlobalAlert';
 import { GlobalLoading } from './src/components/Loading';
-import Api from "./src/api"
+import Api, { deleteAuth } from "./src/api"
 
 export default function App() {
   const initialState = {
-    userToken: null,
-    isSignout: false,
+    token: null,
     isLoading: true,
     user:null
   }
   const [state, dispatch] = React.useReducer(AuthReducer, initialState)
 
+  const getUser=async ()=>{
+    let response=await Api.get('auth-user');
+    let user=response.data.data
+    return user;
+  }
+
+
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
       let token;
-      let user
 
       try {
+        dispatch({ type: 'LOADING',payload:true});
         token = await AsyncStorage.getItem('token');
-        user=await Api.get('auth-user');
-        user=user.data.data
+        let user=await getUser();
 
-        dispatch({ type: 'FETCH_TOKEN', token });
-        dispatch({ type: 'FETCH_USER', user });
-
-
+        dispatch({ type: 'LOADING',payload:false})
+        dispatch({ type: 'USER_LOGIN_FULFILLED', payload:{token,user} });
       } catch (e) {
+        dispatch({ type: 'LOADING',payload:false})
+  
         // Restoring token failed
       }
 
@@ -59,13 +65,13 @@ export default function App() {
 
   const authContext = React.useMemo(
     () => ({
-      signIn: async (data: string) => {
+      signIn: async (token: string) => {
         try {
-          await AsyncStorage.setItem('token', data)
-          dispatch({ type: 'SIGN_IN', token: data });
+          await AsyncStorage.setItem('token', token)
+          let user=await getUser();
+          dispatch({ type: 'SIGN_IN', payload:{token,user} });
         } catch (err) {
-          console.log(err);
-
+          alert('Unknown Error')
         }
 
       },
@@ -73,26 +79,23 @@ export default function App() {
         try {
           await AsyncStorage.removeItem('token')
           dispatch({ type: 'SIGN_OUT' });
+          deleteAuth()
         } catch (err) {
-          console.log(err);
+      
 
         }
       
-      },
-      signUp: async (data: string) => {
-        dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
       },
       // user:!state.isLoading && state.user
     }),
     []
   );
 
-  console.log(state.user)
   return (
     <AuthContext.Provider value={{authContext,user:state.user}} >
       <PaperProvider theme={theme}>
-        <AlertProvider customStyle={customAlertStyle}>
         <NavigationContainer>
+        <AlertProvider customStyle={customAlertStyle}>
           {
             state.isLoading ? <GlobalLoading  /> :
               state.token ?
@@ -104,8 +107,8 @@ export default function App() {
                 :
                 <AuthenticationNavigator />
           }
-        </NavigationContainer>
         </AlertProvider>
+        </NavigationContainer>
       </PaperProvider>
     </AuthContext.Provider>
   );

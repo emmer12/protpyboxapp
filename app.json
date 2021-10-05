@@ -10,7 +10,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "androidStatusBar":{
+    "androidStatusBar": {
       "backgroundColor": "#000000"
     },
     "updates": {
@@ -24,6 +24,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "android": {
+      "package": "com.withux.proptybox"
     }
   }
 }

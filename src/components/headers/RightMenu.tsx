@@ -12,7 +12,7 @@ const Right=()=>{
         <TouchableOpacity style={styles.item}>
          <Ionicons name="md-notifications" size={26} color="grey" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.item}>
+        <TouchableOpacity onPress={()=>navigation.navigate("SearchScreen")} style={styles.item}>
         <Ionicons name="md-search" size={26} color="grey" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.item} onPress ={ ( ) => navigation.openDrawer()}>
