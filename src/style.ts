@@ -9,7 +9,7 @@ export default StyleSheet.create({
     },
 
     input:{
-        backgroundColor:'#EEF4FF',
+        backgroundColor:'#fff',
         color:'#444'
     },
     formControl:{

@@ -4,7 +4,7 @@ import { TextInput,Button,Text,Title,Subheading,HelperText, Caption} from 'react
 import {AuthHeader} from '../../components';
 import Api from '../../api';
 import gstyle from "../../style"
-import { Formik, useFormik } from 'formik';
+import { Formik } from 'formik';
 
 import * as Yup from 'yup';
 import AuthContext from '../../store/context';
@@ -14,49 +14,42 @@ import {OtpVerifyRoute } from '../../navigation/type';
 
 
 
-const OtpSchema = Yup.object().shape({
-     otp: Yup.number().required('otp number is required'),
+const emailSchema = Yup.object().shape({
+     email: Yup.string().email().required('Email is required'),
 });
 
 
 
 
-export default function OtpVerify() {
+export default function Forgemailassword() {
   const initialValues={
-    otp: "",
+    email: "",
   }
   const { width, height } = Dimensions.get('window')
   const [loading, setLoading] = useState(false)
   const {authContext:{signIn}} = React.useContext(AuthContext);
   const { alert : Alert } = React.useContext(AlertContext);
-  const route= useRoute<OtpVerifyRoute>();
+  const route= useRoute<OtpVerifyRoute>()
+
   const navigation=useNavigation();
-  const OtpVerify=(value:any,resetForm:any)=>{
-// Check your email for the Otp
+  
+
+  const emailVerify=(value:any)=>{
     setLoading(true);
-    value.email=route.params.email; 
-    let reset=route.params.reset || false; 
-    Api.post("/email-otp-verification", value)
+    Api.post("/request-password-reset", value)
     .then((res) => {
       setLoading(false);
       Alert({
-        title: "Otp Verification Successful.",
+        title: "email Verification Successful.",
         type: "success",
         visible: true,
       });
-
-      if (reset) {
-        navigation.navigate('ResetPassword',{email:value.email})
-      }else{
-        signIn(res.data.access_token);
-      }
-      
+      navigation.navigate("OtpVerifyScreen", { email: value.email,reset:true });
     })
     .catch((err) => {
       setLoading(false);
-      resetForm()
       Alert({
-        title: err.response.data.msg,
+        title: 'User not found',
         type: "error",
         visible: true,
       });
@@ -71,36 +64,36 @@ export default function OtpVerify() {
         <View style={{flex:1 }}></View>
          <View style={styles.bCon}>
             <View style={styles.body}>
-               <AuthHeader page="Otp Verification" title="" msg="Check your email for the Otp" />
-                <Subheading>Check your email ({route.params.email}) for the Otp</Subheading>
+               <AuthHeader page="Forgot Password" title="" msg="" />
+                <Subheading>Enter your email you will be sent a code to reset your password</Subheading>
                     <Formik
                       initialValues={initialValues}
-                      onSubmit={(values,{ resetForm }) => OtpVerify(values,resetForm)}
-                      validationSchema={OtpSchema}
+                      onSubmit={values => emailVerify(values)}
+                      validationSchema={emailSchema}
                     >
                       {({ handleChange, handleBlur, handleSubmit, values,errors, touched }) => (
                       <View>
 
                       <View style={gstyle.formControl}>  
                         <TextInput
-                          onChangeText={handleChange('otp')}
-                          onBlur={handleBlur('otp')}
-                          value={values.otp}
+                          mode="outlined"
+                          onChangeText={handleChange('email')}
+                          onBlur={handleBlur('email')}
+                          value={values.email}
                           style={gstyle.input}
-                          label="******"
-                          placeholder="Enter your name"
-                          keyboardType="number-pad"
-                          error={errors.otp && touched.otp ? true : false}
+                          label="Email Address"
+                          placeholder="example@mail.com"
+                          error={errors.email && touched.email ? true : false}
                         />
-                        {errors.otp && touched.otp ? (
-                            <HelperText  type="error">{errors.otp}</HelperText>
+                        {errors.email && touched.email ? (
+                            <HelperText  type="error">{errors.email}</HelperText>
                           ) : null}
 
                       </View>
 
                           <Button loading={loading} disabled={loading} onPress={handleSubmit} theme={{ roundness: 3 }} mode="contained">Submit</Button>
 
-                          <Caption style={{marginTop:10}}>Don't Recieve? Resend</Caption>
+                          {/* <Caption style={{marginTop:10}}>Don't Recieve? Resend</Caption> */}
                       </View>
                       )}
                     </Formik>
@@ -115,7 +108,7 @@ export default function OtpVerify() {
 const styles=StyleSheet.create({
    bCon:{
      backgroundColor:'white',
-     height:'90%',
+     height:'70%',
      borderTopLeftRadius:50,
      borderTopRightRadius:50,
      padding:15,

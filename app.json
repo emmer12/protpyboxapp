@@ -2,6 +2,7 @@
   "expo": {
     "name": "Proptybox",
     "slug": "proptybox",
+    "description": "Find Your New Room And Your Perfect Roommate On The Go.",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -26,7 +27,11 @@
       "favicon": "./assets/favicon.png"
     },
     "android": {
-      "package": "com.withux.proptybox"
+      "package": "com.withux.proptybox",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      }
     }
   }
 }

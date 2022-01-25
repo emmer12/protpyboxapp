@@ -10,10 +10,11 @@ export type AuthenticationType={
     SignInScreen:undefined;
     SignUpScreen:undefined;
     GuestListing:{guest:boolean};
-    GuestListingDetails:{guest:boolean};
-    GuestRequestDetails:{guest:boolean};
+    GuestListingDetails:{id:number,type:string,guest:boolean};
+    GuestRequestDetails:{id:number,type:string,guest:boolean};
     GuestRequest:{guest:boolean};
-    OtpVerifyScreen:{email:string};
+    OtpVerifyScreen:{email:string,reset?:boolean};
+    ForgotPassword:undefined;
     
   }
 

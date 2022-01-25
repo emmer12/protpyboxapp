@@ -36,6 +36,9 @@ export default function Profile({ navigation }: { navigation: any }) {
 
   useEffect(() => {
     getUser();
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getUser();
+  });
   }, []);
 
   const getUser = () => {
@@ -43,11 +46,10 @@ export default function Profile({ navigation }: { navigation: any }) {
     Api.get("auth-user")
       .then((res) => {
         setLoading(false);
-        console.log(res.data.data.email,'useremail');
         setUser(res.data.data);
       })
       .catch((err) => {
-        console.log(err);
+        alert("Server error")
       });
   };
 
@@ -69,7 +71,7 @@ export default function Profile({ navigation }: { navigation: any }) {
           <View style={styles.con}>
             <View style={styles.profile}>
               <View style={styles.proTop}>
-                <Chat />
+                <View />
                  <TouchableOpacity  onPress={()=>navigation.navigate("SettingScreen")}>
                    <FontAwesome name="cog" color="#444" size={32} />
                  </TouchableOpacity>
@@ -85,7 +87,7 @@ export default function Profile({ navigation }: { navigation: any }) {
 
                 <View style={{ alignItems: "center" }}>
                   <Text>
-                    {user?.gender},{user?.age}
+                    {user?.gender}
                   </Text>
                 </View>
 
@@ -145,7 +147,7 @@ export default function Profile({ navigation }: { navigation: any }) {
                       flex: 1,
                     }}
                   />
-                ) : user && user?.listing?.length < 1 ? (
+                ) : user && user?.request?.length < 1 ? (
                   <Text>Empty listing </Text>
                 ) : (
                   <FlatList

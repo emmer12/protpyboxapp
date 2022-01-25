@@ -25,10 +25,17 @@ export default function Home({ navigation }: any) {
 
   useEffect(() => {
     getRequest();
+
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getRequest();
+  });
   }, []);
 
   useEffect(() => {
-    getListing();
+    // getListing();
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getListing()
+  });
   }, [page]);
 
   const getListing=()=>{

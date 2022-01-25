@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  BackHandler
 } from "react-native";
 import {
   TextInput,
@@ -60,6 +61,14 @@ export default function SignUp() {
 
   const { navigate } = useNavigation<OtpVerifyScreenNavigation>();
 
+
+
+
+
+
+
+
+
   const signUp = (value: any) => {
     value.password_confirmation = value.password;
     setLoading(true);
@@ -105,7 +114,7 @@ export default function SignUp() {
               title="Welcome to ProptyBox"
               msg=""
             />
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               <Formik
                 initialValues={initialValues}
                 onSubmit={(values) => signUp(values)}
@@ -126,6 +135,7 @@ export default function SignUp() {
                         onBlur={handleBlur("fullname")}
                         value={values.fullname}
                         style={gstyle.input}
+                        mode="outlined"
                         label="Fullname"
                         placeholder="Enter your name"
                         error={
@@ -142,6 +152,7 @@ export default function SignUp() {
                         onChangeText={handleChange("phone")}
                         onBlur={handleBlur("phone")}
                         value={values.phone}
+                        mode="outlined"
                         style={gstyle.input}
                         label="phone"
                         placeholder="Enter your name"
@@ -158,6 +169,7 @@ export default function SignUp() {
                         onChangeText={handleChange("email")}
                         onBlur={handleBlur("email")}
                         value={values.email}
+                        mode="outlined"
                         style={gstyle.input}
                         label="Email Address"
                         placeholder="mail@example.com"
@@ -172,6 +184,7 @@ export default function SignUp() {
                     <View style={gstyle.formControl}>
                       <TextInput
                         style={gstyle.input}
+                        mode="outlined"
                         error={
                           errors.location && touched.location ? true : false
                         }
@@ -204,6 +217,7 @@ export default function SignUp() {
                       <TextInput
                         value={values.gender}
                         style={gstyle.input}
+                        mode="outlined"
                         error={errors.gender && touched.gender ? true : false}
                         render={(props) => (
                           <RNPickerSelect
@@ -236,6 +250,7 @@ export default function SignUp() {
                         value={values.password}
                         style={gstyle.input}
                         label="Password"
+                        mode="outlined"
                         placeholder="**********"
                         secureTextEntry={true}
                         error={
@@ -266,7 +281,7 @@ export default function SignUp() {
             style={{ marginVertical: 10,position:"absolute",bottom:0,left:24 }}
           >
             <Title style={{ color: "#666", fontSize: 16 }}>
-              Don't have an account ?{" "}
+              Already have an account ?{" "}
             </Title>
           </TouchableOpacity>
         </View>

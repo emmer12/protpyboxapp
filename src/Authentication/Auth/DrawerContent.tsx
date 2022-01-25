@@ -1,5 +1,5 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
+import React, { useEffect } from "react";
+import { View, StyleSheet, Linking } from "react-native";
 import {
   useTheme,
   Avatar,
@@ -20,9 +20,17 @@ import { baseURL } from "../../api";
 // import{ AuthContext } from '../components/context';
 
 export function DrawerContent(props: any) {
-  const { user,authContext:{signOut} } = React.useContext(AuthContext);
-  const imageUrl: any =user && `${baseURL}/uploads/profile-images/${user.profile_pic_filename}`;
+  const {
+    user,
+    authContext: { signOut },
+  } = React.useContext(AuthContext);
+  const imageUrl: any =
+    user && `${baseURL}/uploads/profile-images/${user.profile_pic_filename}`;
 
+  useEffect(() => {
+    const imageUrl: any =
+      user && `${baseURL}/uploads/profile-images/${user.profile_pic_filename}`;
+  }, [user]);
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
@@ -101,7 +109,7 @@ export function DrawerContent(props: any) {
               )}
               label="Support"
               onPress={() => {
-                props.navigation.navigate("SupportScreen");
+                Linking.openURL("mailto:support@proptybox.com");
               }}
             />
           </Drawer.Section>
@@ -123,7 +131,7 @@ export function DrawerContent(props: any) {
             <Icon name="exit-to-app" color={color} size={size} />
           )}
           label="Sign Out"
-          onPress={() =>signOut()}
+          onPress={() => signOut()}
         />
       </Drawer.Section>
     </View>

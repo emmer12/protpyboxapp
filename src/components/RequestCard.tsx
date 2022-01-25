@@ -16,7 +16,9 @@ import {
   Paragraph,
   Caption,
   TouchableRipple,
+  Subheading,
 } from "react-native-paper";
+import { baseURL } from "../api";
 import { RequestType } from "../Authentication/type";
 import { RequestNavigation } from "../navigation/type";
 import theme from "../theme";
@@ -31,20 +33,20 @@ interface RequestCard {
 
 const RequestCard = ({ request, from,guest }: RequestCard) => {
     const navigation=useNavigation();
-  // const imageUrl=request && `https://proptybox.com/uploads/listing/${request.images[0]}`
+  const imageUrl=request && `${baseURL}/uploads/profile-images/${request?.user.profile_pic_filename}`
   return (
     <View>
-      <TouchableRipple style={styles.container} onPress={()=>{guest ? navigation.navigate('GuestRequestDetails',{title:'Request',id:request.id,guest}) : navigation.navigate('RequestDetailsScreen',{title:'Request',id:request.id})}}>
+      <TouchableRipple style={styles.container} onPress={()=>{guest ? navigation.navigate('GuestRequestDetails',{title:'Request',id:request.slug,guest}) : navigation.navigate('RequestDetailsScreen',{title:request.space_title,id:request.slug})}}>
         <View
           style={[
             styles.cardCon,
-            { width: from === "request" ? width - 20 : 300 },
+            { width: from === "request" ? width-20*2 : 300 },
           ]}
         >
           <View style={styles.left}>
             <Avatar.Image
               size={60}
-              source={require("../../assets/avatar.png")}
+              source={{ uri: imageUrl }}
             />
           </View>
           <View style={styles.details}>
@@ -53,9 +55,9 @@ const RequestCard = ({ request, from,guest }: RequestCard) => {
                 ? request.user.fullname.substr(0, 15) + "..."
                 : request.user.fullname}{" "}
             </Title>
-            <Caption>
-              {request.user.age} yrs | {request.user.gender}
-            </Caption>
+            <Subheading numberOfLines={2} style={{maxWidth:200, color:'#888',top:-10}}>
+              {request.space_title}
+            </Subheading>
             <Text>
               Budget &#8358;{request.min_budget}-{request.max_budget}
             </Text>
@@ -73,7 +75,6 @@ const styles = StyleSheet.create({
   },
   cardCon: {
     height: 120,
-    borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
@@ -81,13 +82,13 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     elevation: 1,
-    borderLeftColor: theme.colors.primary,
-    borderLeftWidth: 4,
   },
   left: {
     paddingHorizontal: 10,
   },
-  details: {},
+  details: {
+    justifyContent:'center'
+  },
 });
 
 export default RequestCard;

@@ -25,11 +25,13 @@ import {
   ListDetailsScreen,
   RequestDetailsScreen,
   ListingScreen,
-  PrivateScreen,
+  TermsScreen,
   RequestScreen,
   SettingScreen,
   SignUpScreen,
   SearchScreen,
+  ForgotPasswordScreen,
+  ResetPasswordScreen,
 } from "../screens";
 import { Button, Title } from "react-native-paper";
 import { Home, List, Request, Account, Add } from "../icons";
@@ -71,10 +73,23 @@ export const AuthenticationNavigator = () => {
           headerShown: false,
         }}
       />
-
       <AuthenticationStack.Screen
         name="OtpVerifyScreen"
         component={OtpVerifyScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <AuthenticationStack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <AuthenticationStack.Screen
+        name="ResetPassword"
+        component={ResetPasswordScreen}
         options={{
           headerShown: false,
         }}
@@ -83,44 +98,61 @@ export const AuthenticationNavigator = () => {
       <AuthenticationStack.Screen
         name="GuestListing"
         component={ListingScreen}
-        options={({navigation})=>({
+        options={({ navigation }) => ({
           headerShown: true,
-          headerTitle: (props) =>null,
-          headerRight: (props) => (<TouchableOpacity onPress={()=>navigation.navigate('SignUpScreen')}><Button>Join</Button></TouchableOpacity>),
-
+          headerTitle: (props) => null,
+          headerRight: (props) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignUpScreen")}
+            >
+              <Button>Join</Button>
+            </TouchableOpacity>
+          ),
         })}
       />
-
       <AuthenticationStack.Screen
         name="GuestRequest"
         component={RequestScreen}
-        options={({navigation})=>({
+        options={({ navigation }) => ({
           headerShown: true,
-          headerTitle: (props) =>null,
-          headerRight: (props) => (<TouchableOpacity onPress={()=>navigation.navigate('SignUpScreen')}><Button>Join</Button></TouchableOpacity>),
-
+          headerTitle: (props) => null,
+          headerRight: (props) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignUpScreen")}
+            >
+              <Button>Join</Button>
+            </TouchableOpacity>
+          ),
         })}
       />
-
       <AuthenticationStack.Screen
         name="GuestListingDetails"
         component={ListDetailsScreen}
-        options={({route,navigation})=>({
+        options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: (props) => <Title>{cap(route.params.type)}</Title>,
-          headerRight: (props) => (<TouchableOpacity onPress={()=>navigation.navigate('SignUpScreen')}><Button>Join</Button></TouchableOpacity>),
-
+          headerRight: (props) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignUpScreen")}
+            >
+              <Button>Join</Button>
+            </TouchableOpacity>
+          ),
         })}
       />
-
-    <AuthenticationStack.Screen
+      <AuthenticationStack.Screen
         name="GuestRequestDetails"
         component={RequestDetailsScreen}
-        options={({route,navigation})=>({
+        options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: (props) => <Title>{cap(route.params.title)}</Title>,
-          headerRight: (props) => (<TouchableOpacity onPress={()=>navigation.navigate('SignUpScreen')}><Button>Join</Button></TouchableOpacity>),
-
+          headerRight: (props) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate("SignUpScreen")}
+            >
+              <Button>Join</Button>
+            </TouchableOpacity>
+          ),
         })}
       />
     </AuthenticationStack.Navigator>
@@ -141,6 +173,10 @@ const HomeTabNavigator = () => {
   //     }
   //   }}
   // />
+
+  const handlePress = () => {
+    alert();
+  };
 
   return (
     <Tab.Navigator
@@ -242,7 +278,7 @@ export const AuthNavigator = () => {
         name="ListDetailsScreen"
         component={ListDetailsScreen}
         options={({ route }) => ({
-          headerTitle: (props) => <Title>{cap(route.params.type)}</Title>,
+          headerTitle: (props) => <Title numberOfLines={1}>{cap(route.params.type)}</Title>,
         })}
       />
 
@@ -250,7 +286,7 @@ export const AuthNavigator = () => {
         name="RequestDetailsScreen"
         component={RequestDetailsScreen}
         options={({ route }) => ({
-          headerTitle: (props) => <Title>{cap(route.params.title)}</Title>,
+          headerTitle: (props) => <Title numberOfLines={1} >{cap(route.params.title)}</Title>,
         })}
       />
 
@@ -344,7 +380,7 @@ export const DrawerAuth = () => {
     >
       <Drawer.Screen name="Home" component={AuthNavigator} />
       <Drawer.Screen name="About" component={AboutScreen} />
-      <Drawer.Screen name="Private" component={PrivateScreen} />
+      <Drawer.Screen name="Terms" component={TermsScreen} />
     </Drawer.Navigator>
   );
 };

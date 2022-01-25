@@ -26,7 +26,7 @@ export default class ImageBrowserScreen extends Component {
       }
       navigation.navigate('UploadImage', {photos: cPhotos});
     })
-    .catch((e) => console.log(e));
+    .catch((e) => alert("Opps,server error"));
   };
 
   async _processImageAsync(uri) {

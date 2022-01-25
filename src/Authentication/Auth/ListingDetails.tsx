@@ -28,7 +28,7 @@ const { width, height } = Dimensions.get("window");
 export default function ListDetails({ route }: ListingDetailRoute) {
   const [list, setList] = React.useState<ListingType>({});
   const [loading, setLoading] = React.useState(false);
-  const navigation=useNavigation()
+  const navigation = useNavigation();
 
   useEffect(() => {
     getList();
@@ -36,10 +36,18 @@ export default function ListDetails({ route }: ListingDetailRoute) {
 
   const getList = () => {
     setLoading(true);
-    Api.get("get-list-by-id/" + route.params.id).then((res) => {
-      setLoading(false);
-      setList(res.data.data);
-    });
+    Api.get("get-list-by-slug/" + route.params.id)
+      .then((res) => {
+        setLoading(false);
+        setList(res.data.data);
+      })
+      .catch((err) => {
+        alert("Opps,server error");
+      });
+  };
+
+  const cap = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
   const renderItem = ({ item }: any) => {
@@ -58,7 +66,7 @@ export default function ListDetails({ route }: ListingDetailRoute) {
         <View>
           {list?.images?.length < 1 ? (
             <Image
-              source={require("../../../assets/placeholder.png")}
+              source={require("../../../assets/no-image.png")}
               resizeMode="cover"
             />
           ) : (
@@ -76,9 +84,9 @@ export default function ListDetails({ route }: ListingDetailRoute) {
         </View>
 
         <View style={styles.con}>
+            <Title> {list.space_title}</Title>
           <View style={globalStyle.details}>
             <View style={globalStyle.left}>
-              <Title> {list.space_type}</Title>
               <Paragraph> {list.space_address}</Paragraph>
             </View>
 
@@ -87,20 +95,30 @@ export default function ListDetails({ route }: ListingDetailRoute) {
 
               {route.params.guest ? (
                 <>
-                   <TouchableOpacity
+                  <TouchableOpacity
                     style={styles.btn}
                     onPress={() => navigation.navigate("SignInScreen")}
                   >
                     <MaterialCommunityIcons
                       name="phone"
                       size={24}
-                      color={"#0D50BD"}
+                      color={theme.colors.primary}
                     />
                   </TouchableOpacity>
                 </>
               ) : (
                 <>
-                  <Chat style={{}} />
+                  <Text
+                    style={{ marginTop: 30 }}
+                    onPress={() => {
+                      Linking.openURL(
+                        `https://api.whatsapp.com/send?phone=${list.user.phoneNo}&text=Send20%a20%quote`
+                      );
+                    }}
+                  >
+                    {/* <Chat style={{}} /> */}
+                  </Text>
+
                   <TouchableOpacity
                     style={styles.btn}
                     onPress={() => Linking.openURL(`tel:${list.user.phoneNo}`)}
@@ -108,7 +126,7 @@ export default function ListDetails({ route }: ListingDetailRoute) {
                     <MaterialCommunityIcons
                       name="phone"
                       size={24}
-                      color={"#0D50BD"}
+                      color={theme.colors.primary}
                     />
                   </TouchableOpacity>
                 </>
@@ -121,9 +139,7 @@ export default function ListDetails({ route }: ListingDetailRoute) {
               <Text>Rent</Text>
             </View>
             <View>
-              <Text>
-                &#8358;{list.rent} per {list.duration}
-              </Text>
+              <Text>&#8358;{list.rent}</Text>
             </View>
           </View>
 
@@ -138,10 +154,19 @@ export default function ListDetails({ route }: ListingDetailRoute) {
 
           <View style={[globalStyle.row, globalStyle.rowTint]}>
             <View style={globalStyle.p50}>
-              <Text>Space location</Text>
+              <Text>Space State</Text>
             </View>
             <View>
-              <Text>{list.space_location}</Text>
+              <Text>{list.space_state}</Text>
+            </View>
+          </View>
+
+          <View style={[globalStyle.row]}>
+            <View style={globalStyle.p50}>
+              <Text>Space Campus</Text>
+            </View>
+            <View>
+              <Text style={{ maxWidth: 200 }}>{list.space_campus}</Text>
             </View>
           </View>
 
@@ -196,8 +221,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   btn: {
-    borderColor: "#0D50BD",
-    borderWidth: 2,
+    // borderColor: "#0D50BD",
+    // borderWidth: 2,
     width: 32,
     height: 32,
     borderRadius: 16,

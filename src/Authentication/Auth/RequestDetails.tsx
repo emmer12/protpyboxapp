@@ -54,7 +54,6 @@ export default function ListDetails({ route }: ListingDetailRoute) {
     setLoading(true);
     Api.get("get-request-by-id/" + route.params.id).then((res) => {
       setLoading(false);
-      console.log(res.data.data, "data from server");
       setRequest(res.data.data);
     });
   };
@@ -71,6 +70,11 @@ export default function ListDetails({ route }: ListingDetailRoute) {
   const imageUrl =
     !loading &&
     `${baseURL}/uploads/profile-images/${request?.user.profile_pic_filename}`;
+
+
+    const cap = (str: string) => {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    };
 
   return (
     <ScrollView>
@@ -92,7 +96,7 @@ export default function ListDetails({ route }: ListingDetailRoute) {
               <View style={{ alignItems: "center" }}>
                 <Subheading>{request.user.fullname}</Subheading>
                 <Text>
-                  {request.user.gender} | {request.user.age} Yrs
+                  {request.user.gender} 
                 </Text>
               </View>
             </View>
@@ -109,12 +113,13 @@ export default function ListDetails({ route }: ListingDetailRoute) {
                     <MaterialCommunityIcons
                       name="phone"
                       size={24}
-                      color={"#0D50BD"}
+                      color={theme.colors.primary}
                     />
                   </TouchableOpacity>
                   </>
                 ) : (
                   <View style={[globalStyle.right]}>
+                    <Text>BUDGET:</Text>
                     <Text
                       style={{
                         marginHorizontal: 10,
@@ -125,7 +130,7 @@ export default function ListDetails({ route }: ListingDetailRoute) {
                       &#8358;{request && request.min_budget}-&#8358;
                       {request && request.max_budget}
                     </Text>
-                    <Chat style={{}} />
+                    {/* <Chat style={{}} /> */}
                     {request.user.reveal_contact && (
                       <TouchableOpacity
                         style={styles.btn}
@@ -136,7 +141,7 @@ export default function ListDetails({ route }: ListingDetailRoute) {
                         <MaterialCommunityIcons
                           name="phone"
                           size={24}
-                          color={"#0D50BD"}
+                          color={theme.colors.primary}
                         />
                       </TouchableOpacity>
                     )}
@@ -146,19 +151,29 @@ export default function ListDetails({ route }: ListingDetailRoute) {
 
               <View style={[globalStyle.row, globalStyle.rowTint]}>
                 <View style={globalStyle.p50}>
-                  <Text>Property type</Text>
+                  <Text >Property Title</Text>
                 </View>
                 <View>
-                  <Text>{request.space_type}</Text>
+                  <Text style={{maxWidth:170}}>{request.space_title}</Text>
                 </View>
               </View>
 
               <View style={[globalStyle.row, globalStyle.rowTint]}>
                 <View style={globalStyle.p50}>
-                  <Text>Property location</Text>
+                  <Text>Space location</Text>
                 </View>
                 <View>
-                  <Text>{request.space_location}</Text>
+                  <Text>{request.space_state}</Text>
+                </View>
+              </View>
+
+              
+              <View style={[globalStyle.row,]}>
+                <View style={globalStyle.p50}>
+                  <Text>Space Campus</Text>
+                </View>
+                <View>
+                  <Text style={{maxWidth:170}}>{request.space_campus}</Text>
                 </View>
               </View>
 
@@ -170,6 +185,8 @@ export default function ListDetails({ route }: ListingDetailRoute) {
                   <Text>{request.space_for}</Text>
                 </View>
               </View>
+
+            
 
               <View style={[globalStyle.row]}>
                 <View style={globalStyle.p50}>
@@ -207,13 +224,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   btn: {
-    borderColor: "#0D50BD",
-    borderWidth: 2,
     width: 32,
     height: 32,
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 10,
+
   },
 });

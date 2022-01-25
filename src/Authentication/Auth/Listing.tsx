@@ -26,17 +26,22 @@ export default function Listing({navigation}:any) {
 
   useEffect(() => {
     getListing()
+
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getListing()
+  });
  }, [page])
 
   const getListing=()=>{
     let url=guest ? `/all-listing?page=${page}` : `/all-listing?page=${page}&user=1`
-    console.log(url)
     page == 1 && setLoading(true)
     Api.get(url).then(res=>{
     setLastPage(res.data.meta.last_page);
     setLoading(false) 
       let newVal:any=res.data.data;
       setListing([...listing,...newVal]);
+    }).catch(()=>{
+      alert('Network Error')
     })
   }
 

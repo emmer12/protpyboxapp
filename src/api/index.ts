@@ -1,12 +1,20 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 const mode = 'production'
-export const baseURL='http://192.168.43.229:8000'
+
+let b='http://192.168.14.248:8000'
+let p='https://proptybox.com' 
+let s='http://proptybox.emmanueltaiwo.com'
+export const baseURL=p;
+
+// export const baseURL='https://proptybox.com/'
 let prod= 'https://proptybox.com.ng/api/v1' 
 let production= 'https://proptybox.com/api/v1' 
+let pro='http://4473-197-210-227-5.ngrok.io/'
 let devEndpoint= 'https://api.proptybox.com/api/v1' 
-let localEndpoint= 'http://192.168.43.229:8000/api/v1' 
-// 
+let localEndpoint= 'http://192.168.14.248:8000/api/v1' 
+let staging="http://proptybox.emmanueltaiwo.com/api/v1"
+
 const api = axios.create({
   baseURL:production
 });

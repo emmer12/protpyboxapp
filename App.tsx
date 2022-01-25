@@ -2,7 +2,6 @@ import 'react-native-gesture-handler';
 import * as React from 'react';
 import { ActivityIndicator, Text, StatusBar, Button } from "react-native";
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 import { Provider as PaperProvider, Title } from 'react-native-paper';
 import theme,{customAlertStyle} from "./src/theme"
@@ -30,16 +29,17 @@ export default function App() {
     return user;
   }
 
-
+  
+  let token;
+  let user;
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     const bootstrapAsync = async () => {
-      let token;
 
       try {
         dispatch({ type: 'LOADING',payload:true});
         token = await AsyncStorage.getItem('token');
-        let user=await getUser();
+        user=await getUser();
 
         dispatch({ type: 'LOADING',payload:false})
         dispatch({ type: 'USER_LOGIN_FULFILLED', payload:{token,user} });
@@ -59,9 +59,7 @@ export default function App() {
     };
 
     bootstrapAsync();
-  }, []);
-
-
+  }, [user]);
 
   const authContext = React.useMemo(
     () => ({
@@ -86,7 +84,16 @@ export default function App() {
         }
       
       },
-      // user:!state.isLoading && state.user
+      setUser:async (token:string)=>{
+        try {
+          await AsyncStorage.setItem('token', token)
+          let user=await getUser();
+          dispatch({ type: 'SIGN_IN', payload:{token,user} });
+        } catch (err) {
+          alert('Unknown Error')
+        }
+      }
+      
     }),
     []
   );

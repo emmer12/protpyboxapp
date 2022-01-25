@@ -4,33 +4,39 @@ export type ListingType={
     id:number;
     about_property:string;
     images:any;
-    space_type:string;
     space_address:string;
     views:[];
     rent:number;
     available_from:string;
+    slug:string;
     space_for:string;
+    space_title:string;
     bedroom_type:string;
     property_type:string;
     about_cohabitation:string;
     payer_gender:string;
     selectedTags?:[any] ;
-    space_location:string;
+    space_state:string;
+    space_campus:string;
     duration:string,
-    user:UserType
+    user:UserType,
+    boosted:boolean
 
 }
 
 export type RequestType={
     id:number;
+    slug:string;
     space_for:string;
     min_budget:number;
     max_budget:number;
-    space_location:string;
-    space_type:string;
+    space_state:string;
+    space_campus:string;
+    space_title:string;
     about_property:string;
     about_cohabitation:string;
-    user:UserType
+    user:UserType,
+    rent:string
 }
 
 export type UserType={

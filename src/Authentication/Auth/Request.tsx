@@ -29,11 +29,14 @@ export default function Request() {
     <RequestCard request={item} from="request" guest={guest} />
   );
   useEffect(() => {
-    getListing()
+    getRequest()
+    const willFocusSubscription = navigation.addListener('focus', () => {
+      getRequest()
+  });
  }, [])
 
 
-  const getListing=()=>{
+  const getRequest=()=>{
     setLoading(true)
     Api.get('/all-request').then(res=>{
       setRequest(res.data.data)

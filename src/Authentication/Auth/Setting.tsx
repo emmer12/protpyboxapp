@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions,Linking } from "react-native";
 import { Divider, List } from "react-native-paper";
 import gstyle from "../../style";
 
@@ -38,16 +38,20 @@ export default function Home() {
       />
 
       <List.Item
-        title="Private policy"
+        title="Terms and Conditions"
         right={(props) => <List.Icon {...props} icon="arrow-right" />}
-        onPress={()=>{}}
+        onPress={() => {
+          navigation.navigate("Terms");
+        }}
 
       />
 
       <List.Item
         title="Support"
         right={(props) => <List.Icon {...props} icon="arrow-right" />}
-        onPress={()=>{}}
+        onPress={() => {
+          Linking.openURL('mailto:support@proptybox.com')
+        }}
 
       />
     </View>

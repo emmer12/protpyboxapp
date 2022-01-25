@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,7 +8,6 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
-  BackHandler
 } from "react-native";
 import {
   TextInput,
@@ -28,7 +27,7 @@ import { AlertContext } from "../../context/GlobalAlert";
 import { List, Request } from "../../icons";
 
 import * as Yup from "yup";
-import { useNavigation } from "@react-navigation/core";
+import { useNavigation, useRoute } from "@react-navigation/core";
 import {
   ListingNavigation,
   OnboardingScreenNavigation,
@@ -37,11 +36,13 @@ import {
 } from "../../navigation/type";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const SignupSchema = Yup.object().shape({
+const PasswordResetSchema = Yup.object().shape({
   password: Yup.string()
     .min(6, "Password must be more than six(6) characters")
     .required("Password is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
+    password_confirmation:Yup.string()
+    .min(6, "Password must be more than six(6) characters")
+    .required("Password Confirmation is required"),
 });
 
 const { width, height } = Dimensions.get("window");
@@ -50,6 +51,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false);
 
   const { navigate } = useNavigation<OnboardingScreenNavigation>();
+  const route= useRoute()
 
   const {
     authContext: { signIn },
@@ -59,7 +61,10 @@ export default function SignUp() {
   const handleLogin = (value: any) => {
     setLoading(true);
 
-    Api.post("/login", value)
+    value.email=route.params.email; 
+    value.from='mobile'; 
+
+    Api.post("/reset-password", value)
       .then((res) => {
         setLoading(false);
         Alert({
@@ -67,7 +72,7 @@ export default function SignUp() {
           type: "success",
           visible: true,
         });
-        signIn(res.data.data.access_token);
+        navigate("SignInScreen");
       })
       .catch((err) => {
         setLoading(false);
@@ -79,46 +84,23 @@ export default function SignUp() {
       });
   };
 
-  
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
-    return () => backHandler.remove()
-  }, [])
-
-
   return (
     // <SafeAreaView>
       <View style={gstyle.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      <View style={styles.topList}>
-        <TouchableOpacity
-          onPress={() => navigate("GuestListing", { guest: true })}
-          style={gstyle.flex}
-        >
-          <List color={"#5895F9"} size={18} />
-          <Text style={{ marginHorizontal: 10 }}>LISTINGS</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => navigate("GuestRequest", { guest: true })}
-          style={gstyle.flex}
-        >
-          <Request color={"#5895F9"} size={18} />
-          <Text style={{ marginHorizontal: 10 }}>REQUESTS</Text>
-        </TouchableOpacity>
-      </View>
 
       <ScrollView style={{ flex: 1,top:50 }} keyboardShouldPersistTaps="handled">
         <View style={{ flex: 1 }}>
           <View style={{ flex: 1 }}></View>
           <View style={styles.bCon}>
             <View style={styles.body}>
-              <AuthHeader page="Sign in" title="Welcome Back" msg="" />
+              <AuthHeader page="Reset Password" title="Let's get you a new password " msg="" />
               <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <Formik
-                  initialValues={{ email: "", password: "" }}
+                  initialValues={{ email: "", password: "",password_confirmation:"" }}
                   onSubmit={(values) => handleLogin(values)}
-                  validationSchema={SignupSchema}
+                  validationSchema={PasswordResetSchema}
                 >
                   {({
                     handleChange,
@@ -131,29 +113,11 @@ export default function SignUp() {
                     <View>
                       <View style={gstyle.formControl}>
                         <TextInput
-                          onChangeText={handleChange("email")}
-                          onBlur={handleBlur("email")}
-                          value={values.email}
-                          style={gstyle.input}
-                          mode="outlined"
-                          label="Email Address"
-                          placeholder="mail@example.com"
-                          error={errors.email && touched.email ? true : false}
-                          keyboardType="email-address"
-                        />
-                        {errors.email && touched.email ? (
-                          <HelperText type="error">{errors.email}</HelperText>
-                        ) : null}
-                      </View>
-
-                      <View style={gstyle.formControl}>
-                        <TextInput
                           onChangeText={handleChange("password")}
                           onBlur={handleBlur("password")}
                           value={values.password}
                           style={gstyle.input}
-                          label="Password"
-                          mode="outlined"
+                          label="New Password"
                           placeholder="**********"
                           secureTextEntry={true}
                           error={
@@ -167,9 +131,26 @@ export default function SignUp() {
                         ) : null}
                       </View>
 
-                      <TouchableOpacity onPress={()=>navigate("ForgotPassword")} style={styles.forgot}>
-                        <Caption>Forgot password?</Caption>
-                      </TouchableOpacity>
+                      <View style={gstyle.formControl}>
+                        <TextInput
+                          onChangeText={handleChange("password_confirmation")}
+                          onBlur={handleBlur("password_confirmation")}
+                          value={values.password_confirmation}
+                          style={gstyle.input}
+                          label="Confirm Password"
+                          placeholder="**********"
+                          secureTextEntry={true}
+                          error={
+                            errors.password_confirmation && touched.password_confirmation ? true : false
+                          }
+                        />
+                        {errors.password_confirmation && touched.password_confirmation ? (
+                          <HelperText type="error">
+                            {errors.password_confirmation}
+                          </HelperText>
+                        ) : null}
+                      </View>
+
                       <Button
                         style={{ zIndex: 999 }}
                         loading={loading}
@@ -192,9 +173,7 @@ export default function SignUp() {
                 onPress={() => navigate("SignUpScreen")}
                 style={{ marginVertical: 10 }}
               >
-                <Title style={{ color: "#666", fontSize: 16 }}>
-                  Don't have an account ?{" "}
-                </Title>
+               
               </TouchableOpacity>
 
               {/* <View>
@@ -263,7 +242,7 @@ const styles = StyleSheet.create({
 
   topList: {
     backgroundColor: "#fff",
-    // position: "absolute",
+    position: "absolute",
     width,
     flexDirection: "row",
     justifyContent: "space-between",
